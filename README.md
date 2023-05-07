@@ -1,6 +1,6 @@
 # bookmarklet-collection
 
-A collection of bookmarklets I wrote and still use once in a full moon
+A collection of bookmarklets I wrote and still use once in a full moon. Most of them are not actively maintained and may not work as expected today.
 
 # Resources
 
