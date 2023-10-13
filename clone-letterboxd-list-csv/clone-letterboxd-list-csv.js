@@ -18,14 +18,22 @@ javascript:(function(){
       csvData += `\nhttps://letterboxd.com${uriNode.stringValue},,"${titleNode.stringValue}"`;
     }
   
+
+    const urlSegments = window.location.pathname.split('/');
+    let fileName = 'data.csv';
+    if (urlSegments.includes('list')) {
+      fileName = urlSegments[urlSegments.indexOf('list') + 1] + '.csv';
+    }
+
     const blob = new Blob([csvData], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', 'data.csv');
+    link.setAttribute('download', fileName);
     link.click();
 
     URL.revokeObjectURL(url);
+    $(document).off('ajaxStop');
   });
 })()
