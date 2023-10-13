@@ -1,7 +1,5 @@
 javascript:(function(){
-  var e = $('.really-lazy-load');
-  bxd.loadReallyLazyPosters(e);
-  $(document).ajaxStop(() => {
+  function cloneList() {
     const posterContainersXPath = '//li[contains(@class, "poster-container")]';
     const uriXPath = './/a[@class="frame has-menu"]/@href';
     const titleXPath = './/span[@class="frame-title"]/text()';
@@ -35,5 +33,13 @@ javascript:(function(){
 
     URL.revokeObjectURL(url);
     $(document).off('ajaxStop');
+  }
+  var e = $('.really-lazy-load');
+  bxd.loadReallyLazyPosters(e);
+  $(document).ajaxStop(() => {
+    cloneList();
   });
+  if (!e.length) {
+    cloneList();
+  }
 })()
