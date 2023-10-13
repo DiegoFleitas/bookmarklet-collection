@@ -6,4 +6,4 @@ Better placed on a repo than among the (too many) bookmarks on my Firefox browse
 # Resources
 
 - [JS Builder](http://subsimple.com/bookmarklets/jsbuilder.htm): A tool for creating and testing bookmarklets.
-- [Esprima Validator](https://esprima.org/demo/validate.html): A JavaScript syntax validator to ensure your code is free of syntax errors.
+- [Esprima Validator](https://esprima.org/demo/validate.html): A JavaScript syntax validator to ensure your code is free of syntax errors. (This won't catch comments, remember you can't have those in a single-line bookmarklet :wink:)
