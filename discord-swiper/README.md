@@ -1,4 +1,4 @@
-[Bookmarklet Source (Right-click to save as a bookmark, or drag to bookmark bar)](index.js)
+[Bookmarklet Source](index.js)(Right-click to save as a bookmark, or drag to bookmark bar)
 
 This JavaScript bookmarklet is designed to collect and display the Discord user IDs, usernames, avatars, discriminators, connected accounts, and mutual guilds of members of a server when used on the web client. It is important to note that you must enable Developer Mode on the web client for this script to work. Additionally, the Authorization header must be set with a valid value at line 130, which you can copy from any request made to the discord.com/api endpoint by the client itself.
 

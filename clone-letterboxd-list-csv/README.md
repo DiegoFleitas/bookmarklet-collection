@@ -1,4 +1,4 @@
-[Bookmarklet Source (Right-click to save as a bookmark, or drag to bookmark bar)](index.js)
+[Bookmarklet Source](index.js)(Right-click to save as a bookmark, or drag to bookmark bar)
 
 This JavaScript bookmarklet helps users quickly generate a CSV file of movie information from a Letterboxd page. When activated, it extracts movie URLs and titles from the current page and compiles this data into a CSV file which is then automatically downloaded to the user's device.
 Usage
