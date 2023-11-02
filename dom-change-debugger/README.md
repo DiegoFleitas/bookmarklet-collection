@@ -1,5 +1,3 @@
-[Bookmarklet Source](index.js) (Right-click to save as a bookmark, or drag to bookmark bar)
-
 This JavaScript bookmarklet creates an object called Spy that observes changes in the DOM of a webpage. To use it for inspecting a specific DOM element, follow these steps:
 
     Save the script as a bookmarklet and click it while on a webpage.
