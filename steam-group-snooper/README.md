@@ -1,4 +1,4 @@
-[Bookmarklet Source](index.js)(Right-click to save as a bookmark, or drag to bookmark bar)
+[Bookmarklet Source](index.js) (Right-click to save as a bookmark, or drag to bookmark bar)
 
 This JavaScript bookmarklet is intended to be used on the member tab of a Steam group to extract the URLs of friends' profiles. It was created without knowledge of Steam's XML approach, which uses the /memberslistxml/?xml=1 endpoint to retrieve group members' information in XML format.
 
