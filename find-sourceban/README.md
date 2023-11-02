@@ -1,4 +1,4 @@
-[Bookmarklet Source (Right-click to save as a bookmark, or drag to bookmark bar)](index.js)
+[Bookmarklet Source](index.js)(Right-click to save as a bookmark, or drag to bookmark bar)
 
 This JavaScript bookmarklet is intended for use on the ban list page of a generic SourceBans++ installation, such as the one found at https://www.skial.com/sourcebans/index.php?p=banlist. SourceBans++ is a system for managing bans, administration, and communication for the Source engine.
 
