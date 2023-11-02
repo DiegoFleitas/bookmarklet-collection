@@ -6,7 +6,11 @@
     <title>Bookmarklet Collection</title>
   </head>
   <body>
-    <h1>Bookmarklet Collection</h1>
+    <h1>Diego's Bookmarklet Collection</h1>
+    <p>
+      Drag the links below to your bookmarks bar or click them to run the
+      bookmarklets.
+    </p>
     <ul id="bookmarklet-list">
       <!-- Bookmarklets will be added here by JavaScript -->
     </ul>
@@ -49,5 +53,46 @@
       // Load all the bookmarklets
       loadAllBookmarklets();
     </script>
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        font-size: 18px;
+        background-color: #ffffff;
+        color: #333333;
+        padding: 20px;
+      }
+
+      header {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+
+      #bookmarklet-list {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      #bookmarklet-list li {
+        margin-bottom: 10px;
+      }
+
+      #bookmarklet-list a {
+        color: #007bff;
+        border: 1px solid #007bff;
+        padding: 5px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+
+      #bookmarklet-list a:hover {
+        background-color: #007bff;
+        color: #ffffff;
+      }
+
+      p {
+        margin-bottom: 20px;
+      }
+    </style>
   </body>
 </html>
