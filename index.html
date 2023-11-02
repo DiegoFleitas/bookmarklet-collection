@@ -14,7 +14,7 @@
     <script>
       // Function to fetch the bookmarklet code and create a draggable link
       async function loadBookmarklet(folderName) {
-        const url = `https://diegofleitas.github.io/bookmarklet-collection/${folderName}/index.js`;
+        const url = `https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/${folderName}/index.js`;
         const name = folderName.replace(/-/g, " "); // Convert hyphens to spaces for a readable name
         try {
           const response = await fetch(url);
