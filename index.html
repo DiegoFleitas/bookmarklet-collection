@@ -27,6 +27,9 @@
           const link = document.createElement("a");
           link.href = `javascript:${encodeURIComponent(code)}`;
           link.textContent = name;
+          link.onclick = function () {
+            return false;
+          }; // disable clicking on the link
           listItem.appendChild(link);
           document.getElementById("bookmarklet-list").appendChild(listItem);
         } catch (error) {
