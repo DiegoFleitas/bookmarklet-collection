@@ -1,1 +1,0 @@
-javascript:var Spy=function (){function Spy(){}Spy.observe=function (targetNode){Spy.observer.observe(targetNode,Spy.config);};Spy.disconnect=function (){Spy.observer.disconnect();};Spy["break"]=function (mutationsList,observer){debugger;console.trace();};Spy.config={subtree:true,childList:true,attributes:true};Spy.observer=new MutationObserver(Spy["break"]);return Spy;}()
