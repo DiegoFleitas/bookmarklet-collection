@@ -2,7 +2,7 @@
 
 A collection of old bookmarklets I wrote and still use once in a full moon. Most of them are not actively maintained and may not work as expected today. Better placed on a repo than among the (too many) bookmarks on my Firefox browser.
 
-This repository utilizes a clever setup using GitHub Pages in combination with jsDelivr to provide a dynamic list of all the bookmarklets contained herein. Each bookmarklet is housed in its own directory at the root level of the repository. The [`gh-pages`](https://github.com/DiegoFleitas/bookmarklet-collection/tree/gh-pages) branch hosts an `index.html` file which, when accessed, fetches the list of directories (each representing a bookmarklet) from the GitHub API, and dynamically creates draggable bookmarklet links for each one. The JavaScript files are now served via jsDelivr from the `main` branch, ensuring that the page always reflects the current set of bookmarklets in the repository without any manual updating of the HTML file.
+This repository utilizes a clever setup using GitHub Pages in combination with [jsDelivr](https://www.jsdelivr.com/github) to provide a dynamic list of all the bookmarklets contained herein. Each bookmarklet is housed in its own directory at the root level of the repository. The [`gh-pages`](https://github.com/DiegoFleitas/bookmarklet-collection/tree/gh-pages) branch hosts an `index.html` file which, when accessed, fetches the list of directories (each representing a bookmarklet) from the GitHub API, and dynamically creates draggable bookmarklet links for each one. The JavaScript files are now served via jsDelivr from the `main` branch, ensuring that the page always reflects the current set of bookmarklets in the repository without any manual updating of the HTML file.
 
 ## Live Bookmarklet Page
 
@@ -11,7 +11,7 @@ Visit [the live page](https://diegofleitas.github.io/bookmarklet-collection/) to
 ## How it Works
 
 1. **GitHub Pages Setup**: A `gh-pages` branch is created to host the `index.html` file which is accessible via GitHub Pages at `https://diegofleitas.github.io/bookmarklet-collection/`.
-2. **Dynamic Directory Listing**: The `index.html` file contains JavaScript that fetches the list of directories in the repository using the GitHub API. Each directory represents a bookmarklet.
+2. **Dynamic Directory Listing**: The `index.html` file contains JavaScript that fetches the list of directories in the repository using the [GitHub API](https://docs.github.com/en/rest/reference/repos#get-repository-content). Each directory represents a bookmarklet.
 3. **jsDelivr Integration**: For each directory, the JavaScript fetches the corresponding `index.js` file via jsDelivr from the `main` branch, which contains the bookmarklet code, and creates a draggable link on the page.
 
 ## Resources
