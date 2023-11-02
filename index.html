@@ -1,20 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bookmarklet Collection</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Bookmarklet Collection</h1>
-    <ul>
-        <!-- Bookmarklet -->
-        <li>
-            <a href="javascript:(function(){ /* Your bookmarklet code for bypass-article-paywall here */ })()">
-                Bypass Article Paywall
-            </a>
-        </li>
-        <!-- Add more bookmarklets -->
+    <ul id="bookmarklet-list">
+      <!-- Bookmarklets will be added here by JavaScript -->
     </ul>
-</body>
+
+    <script>
+      // Function to fetch the bookmarklet code and create a draggable link
+      async function loadBookmarklet(folderName) {
+        const url = `https://diegofleitas.github.io/bookmarklet-collection/${folderName}/index.js`;
+        const name = folderName.replace(/-/g, " "); // Convert hyphens to spaces for a readable name
+        try {
+          const response = await fetch(url);
+          const code = await response.text();
+          const listItem = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = `javascript:${encodeURIComponent(code)}`;
+          link.textContent = name;
+          listItem.appendChild(link);
+          document.getElementById("bookmarklet-list").appendChild(listItem);
+        } catch (error) {
+          console.error("Error loading bookmarklet:", error);
+        }
+      }
+
+      // Function to fetch the list of directories in the repository and load the bookmarklets
+      async function loadAllBookmarklets() {
+        const repoContentUrl =
+          "https://api.github.com/repos/DiegoFleitas/bookmarklet-collection/git/trees/main?recursive=1";
+        try {
+          const response = await fetch(repoContentUrl);
+          const data = await response.json();
+          const directories = data.tree.filter((item) => item.type === "tree");
+          for (const directory of directories) {
+            loadBookmarklet(directory.path);
+          }
+        } catch (error) {
+          console.error("Error loading directory list:", error);
+        }
+      }
+
+      // Load all the bookmarklets
+      loadAllBookmarklets();
+    </script>
+  </body>
 </html>
