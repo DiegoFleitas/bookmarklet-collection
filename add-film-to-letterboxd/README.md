@@ -1,4 +1,4 @@
-[Bookmarklet Source](index.js)(Right-click to save as a bookmark, or drag to bookmark bar)
+[Bookmarklet Source](index.js) (Right-click to save as a bookmark, or drag to bookmark bar)
 
 This JavaScript bookmarklet helps users quickly import brand-new additions to TMDb into Letterboxd. When clicked, it extracts the movie ID from the current URL and creates a new Letterboxd URL based on that ID, opening it in a new browser tab. This allows users to seamlessly view and interact with newly added movies on Letterboxd as soon as they are available on TMDb.
 

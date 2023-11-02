@@ -1,4 +1,4 @@
-[Bookmarklet Source](index.js)(Right-click to save as a bookmark, or drag to bookmark bar)
+[Bookmarklet Source](index.js) (Right-click to save as a bookmark, or drag to bookmark bar)
 
 This JavaScript bookmarklet is designed to be used on a Discord webpage and requires Developer Mode to be enabled in Discord settings. It scans the current webpage for usernames and generates a series of alert boxes containing these usernames, formatted as mentions (e.g., "@username"). Users can then copy and paste the mentions into Discord messages to tag everyone. The bookmarklet takes into account Discord's 2000 character limit per message, splitting the mentions into multiple alert boxes when necessary.
 
