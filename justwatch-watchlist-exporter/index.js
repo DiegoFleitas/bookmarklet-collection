@@ -31,6 +31,21 @@ javascript: (function () {
         return output;
     }
 
+    function downloadJsonFile(jsonData) {
+        const jsonStr = JSON.stringify(jsonData, null, 2); // Converts JSON object to string, formatted with 2 spaces indentation
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const fileName = 'watchlist.json';
+
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link); // Append link to body
+        link.click();
+        document.body.removeChild(link); // Clean up
+    }
+
     async function main() {
         var links = getLinks();
         console.log(links);
@@ -38,7 +53,9 @@ javascript: (function () {
             console.log(links[i]);
             await openQuick(links[i]);
         }
-        console.log(localStorage.getItem("watchlistData"));
+        let watchlistData = localStorage.getItem("watchlistData")
+        console.log(watchlistData);
+        downloadJsonFile(JSON.parse(watchlistData));
     }
 
     function scrapeMovieData() {
