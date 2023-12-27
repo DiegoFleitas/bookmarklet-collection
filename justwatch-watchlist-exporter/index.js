@@ -10,7 +10,7 @@ javascript: (function () {
             let movieData = win.eval(`(${scrapeMovieData.toString()})();`);
             /* Save to local storage */
             let watchlistData = JSON.parse(localStorage.getItem("watchlistData") || "[]");
-            watchlistData.push(movieData);
+            watchlistData = watchlistData.concat(movieData);
             localStorage.setItem("watchlistData", JSON.stringify(watchlistData));
             /* Close tab */
             win.close();
