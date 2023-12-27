@@ -74,6 +74,7 @@ javascript: (function () {
 
     function downloadCsvFile(jsonData) {
         const csvData = jsonToCsv(jsonData); /* Convert JSON to CSV */
+        console.log(csvData);
         const blob = new Blob([csvData], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
     
