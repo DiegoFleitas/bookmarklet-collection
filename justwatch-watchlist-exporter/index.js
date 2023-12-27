@@ -8,6 +8,7 @@ javascript: (function () {
             console.log("Window opened");
             /* Inject the scrapeMovieData function into the new window */
             let movieData = win.eval(`(${scrapeMovieData.toString()})();`);
+            movieData = Array.isArray(movieData) ? movieData : [movieData];
             /* Save to local storage */
             let watchlistData = JSON.parse(localStorage.getItem("watchlistData") || "[]");
             watchlistData = watchlistData.concat(movieData);
