@@ -1,18 +1,18 @@
 javascript: (function () {
-    // PRE: switch to ENG language on JustWatch website if not already
-    // PRE: allow emergent windows on browser if popup appears
+    /* PRE: switch to ENG language on JustWatch website if not already */
+    /* PRE: allow emergent windows on browser if popup appears */
     async function openQuick(link) {
         let win = window.open(link, '_blank');
         await sleep(10000);
         if (win) {
             console.log("Window opened");
-            // Inject the scrapeMovieData function into the new window
+            /* Inject the scrapeMovieData function into the new window */
             let movieData = win.eval(`(${scrapeMovieData.toString()})();`);
-            // Save to local storage
+            /* Save to local storage */
             let watchlistData = JSON.parse(localStorage.getItem("watchlistData") || "[]");
             watchlistData.push(movieData);
             localStorage.setItem("watchlistData", JSON.stringify(watchlistData));
-            // Close tab
+            /* Close tab */
             win.close();
         }
     }
@@ -34,11 +34,11 @@ javascript: (function () {
     function jsonToCsv(jsonData) {
         const csvRows = [];
     
-        // SIMKL CSV format https://simkl.com/apps/import/csv/
+        /* SIMKL CSV format https:/*simkl.com/apps/import/csv/ */
         const headers = ["simkl_id", "TVDB_ID", "TMDB", "IMDB_ID", "MAL_ID", "Type", "Title", "Year", "LastEpWatched", "Watchlist", "WatchedDate", "Rating", "Memo"];
         csvRows.push(headers.join(','));
     
-        // Mapping JSON keys to CSV headers
+        /* Mapping JSON keys to CSV headers */
         jsonData.forEach(row => {
             console.log(row);
             const csvRow = headers.map(header => {
@@ -49,7 +49,7 @@ javascript: (function () {
                         value = row.imdbID || '';
                         break;
                     case "Type":
-                        value = "movie"; // Assuming all are movies, adjust as needed
+                        value = "movie"; /* Assuming all are movies, adjust as needed */
                         break;
                     case "Title":
                         value = row.englishTitle || '';
@@ -57,12 +57,12 @@ javascript: (function () {
                     case "Year":
                         value = row.releaseYear || '';
                         break;
-                    // Add cases for other headers as needed
+                    /* Add cases for other headers as needed */
                     default:
-                        value = row[header] || ''; // For headers that directly match JSON keys
+                        value = row[header] || ''; /* For headers that directly match JSON keys */
                 }
     
-                const escapedCell = ('' + value).replace(/"/g, '\\"'); // Escape double quotes
+                const escapedCell = ('' + value).replace(/"/g, '\\"'); /* Escape double quotes */
                 return `"${escapedCell}"`;
             });
     
@@ -73,18 +73,18 @@ javascript: (function () {
     }
 
     function downloadCsvFile(jsonData) {
-        const csvData = jsonToCsv(jsonData); // Convert JSON to CSV
+        const csvData = jsonToCsv(jsonData); /* Convert JSON to CSV */
         const blob = new Blob([csvData], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
     
-        const fileName = 'watchlist.csv'; // Change the file extension to .csv
+        const fileName = 'watchlist.csv'; /* Change the file extension to .csv */
     
         const link = document.createElement('a');
         link.setAttribute('href', url);
         link.setAttribute('download', fileName);
-        document.body.appendChild(link); // Append link to body
+        document.body.appendChild(link); /* Append link to body */
         link.click();
-        document.body.removeChild(link); // Clean up
+        document.body.removeChild(link); /* Clean up */
     }
 
     async function main() {
