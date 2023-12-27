@@ -31,13 +31,54 @@ javascript: (function () {
         return output;
     }
 
-    function downloadJsonFile(jsonData) {
-        const jsonStr = JSON.stringify(jsonData, null, 2); // Converts JSON object to string, formatted with 2 spaces indentation
-        const blob = new Blob([jsonStr], { type: 'application/json' });
+    function jsonToCsv(jsonData) {
+        const csvRows = [];
+    
+        // SIMKL CSV format https://simkl.com/apps/import/csv/
+        const headers = ["simkl_id", "TVDB_ID", "TMDB", "IMDB_ID", "MAL_ID", "Type", "Title", "Year", "LastEpWatched", "Watchlist", "WatchedDate", "Rating", "Memo"];
+        csvRows.push(headers.join(','));
+    
+        // Mapping JSON keys to CSV headers
+        jsonData.forEach(row => {
+            console.log(row);
+            const csvRow = headers.map(header => {
+                let value = '';
+    
+                switch (header) {
+                    case "IMDB_ID":
+                        value = row.imdbID || '';
+                        break;
+                    case "Type":
+                        value = "movie"; // Assuming all are movies, adjust as needed
+                        break;
+                    case "Title":
+                        value = row.englishTitle || '';
+                        break;
+                    case "Year":
+                        value = row.releaseYear || '';
+                        break;
+                    // Add cases for other headers as needed
+                    default:
+                        value = row[header] || ''; // For headers that directly match JSON keys
+                }
+    
+                const escapedCell = ('' + value).replace(/"/g, '\\"'); // Escape double quotes
+                return `"${escapedCell}"`;
+            });
+    
+            csvRows.push(csvRow.join(','));
+        });
+    
+        return csvRows.join('\n');
+    }
+
+    function downloadCsvFile(jsonData) {
+        const csvData = jsonToCsv(jsonData); // Convert JSON to CSV
+        const blob = new Blob([csvData], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
-
-        const fileName = 'watchlist.json';
-
+    
+        const fileName = 'watchlist.csv'; // Change the file extension to .csv
+    
         const link = document.createElement('a');
         link.setAttribute('href', url);
         link.setAttribute('download', fileName);
@@ -55,11 +96,10 @@ javascript: (function () {
         }
         let watchlistData = localStorage.getItem("watchlistData")
         console.log(watchlistData);
-        downloadJsonFile(JSON.parse(watchlistData));
+        downloadCsvFile(JSON.parse(watchlistData));
     }
 
     function scrapeMovieData() {
-        const out = [];
         const genreMap = new Map();
         const defaultClient = __APOLLO_STATE__.defaultClient;
     
@@ -85,7 +125,7 @@ javascript: (function () {
         const genres = movie.genres.map(genre => genreMap.get(defaultClient[genre.id].shortName));
     
         const duration = movie.runtime;
-        out.push({
+        return {
             englishTitle: title,
             originalTitle: ogtitle,
             director: directors,
@@ -95,9 +135,7 @@ javascript: (function () {
             runtime: duration,
             ageCertification: movie.ageCertification,
             genres: genres.sort()
-        });
-    
-        return out;
+        };
     }
 
     main();
