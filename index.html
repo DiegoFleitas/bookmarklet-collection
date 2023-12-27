@@ -21,7 +21,8 @@
         const url = `https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/${folderName}/index.js`;
         const name = folderName.replace(/-/g, " "); // Convert hyphens to spaces for a readable name
         try {
-          const response = await fetch(url);
+          const cacheBuster = new Date().getTime();
+          const response = await fetch(`${url}?${cacheBuster}`);
           const code = await response.text();
           const listItem = document.createElement("li");
           const link = document.createElement("a");
