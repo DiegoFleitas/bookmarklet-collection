@@ -87,7 +87,12 @@ javascript: (function () {
         document.body.removeChild(link); /* Clean up */
     }
 
+    function clearWatchlistData() {
+        localStorage.removeItem("watchlistData");
+    }    
+
     async function main() {
+        clearWatchlistData();
         var links = getLinks();
         console.log(links);
         for (let i = 0; i < links.length; i++) {
