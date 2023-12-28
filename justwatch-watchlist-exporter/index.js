@@ -1,25 +1,65 @@
-javascript: (function () {
+javascript: (async function () {
     /* PRE: switch to ENG language on JustWatch website if not already */
     /* PRE: allow emergent windows on browser if popup appears */
-    async function openQuick(link) {
-        let win = window.open(link, '_blank');
-        await sleep(10000);
-        if (win) {
-            console.log("Window opened");
-            /* Inject the scrapeMovieData function into the new window */
-            let movieData = win.eval(`(${scrapeMovieData.toString()})();`);
-            movieData = Array.isArray(movieData) ? movieData : [movieData];
-            /* Save to local storage */
-            let watchlistData = JSON.parse(localStorage.getItem("watchlistData") || "[]");
-            watchlistData = watchlistData.concat(movieData);
-            localStorage.setItem("watchlistData", JSON.stringify(watchlistData));
-            /* Close tab */
-            win.close();
-        }
-    }
+    main();
 
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    async function fetchAndParseData(link) {
+        try {
+            const response = await fetch(link);
+            const html = await response.text();
+            return parseApolloState(html);
+        } catch (error) {
+            console.error('Error fetching URL:', link, error);
+            return null;
+        }
+    };
+
+    function parseApolloState(html) {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const scriptTags = Array.from(doc.querySelectorAll('script'));
+        const apolloStateScript = scriptTags.find(script => script.textContent.includes('__APOLLO_STATE__'));
+        if (!apolloStateScript) return null;
+    
+        const stateText = apolloStateScript.textContent;
+        const stateJson = stateText.substring(stateText.indexOf('{'), stateText.lastIndexOf('}') + 1);
+        const state = JSON.parse(stateJson);
+
+        const defaultClient = state.defaultClient;
+    
+        const keys = Object.keys(defaultClient).filter(k => k.match(/Movie.*content.*\)$/));
+        const movieKey = keys.reduce((a, b) => Object.keys(defaultClient[a]).length > Object.keys(defaultClient[b]).length ? a : b);
+        const movie = defaultClient[movieKey];
+    
+        const externalIds = Object.keys(defaultClient).filter(k => k.match(/Movie.*content.*\).externalIds$/));
+        const imdbid = externalIds.length > 0 ? defaultClient[externalIds.find(k => "imdbId" in defaultClient[k])].imdbId : "";
+    
+        const genreMap = new Map();
+        const genreKeys = Object.keys(defaultClient).filter(k => k.match(/^Genre:/));
+        genreKeys.forEach(genreKey => {
+            const genreObj = defaultClient[genreKey];
+            genreMap.set(genreObj.shortName, genreObj["slug({\"language\":\"en\"})"]);
+        });
+    
+        const creditKeys = movie.credits.map(credit => credit.id);
+        const directors = creditKeys.map(k => defaultClient[k]).filter(credit => credit.role === "DIRECTOR").map(credit => credit.name);
+        directors.sort();
+    
+        const title = movie.title;
+        const ogtitle = movie.originalTitle;
+        const genres = movie.genres.map(genre => genreMap.get(defaultClient[genre.id].shortName));
+    
+        const duration = movie.runtime;
+        return {
+            englishTitle: title,
+            originalTitle: ogtitle,
+            director: directors,
+            imdbID: imdbid,
+            releaseYear: movie.originalReleaseYear,
+            releaseDate: movie.originalReleaseDate || "",
+            runtime: duration,
+            ageCertification: movie.ageCertification,
+            genres: genres.sort()
+        };
     }
 
     function getLinks() {
@@ -91,59 +131,17 @@ javascript: (function () {
 
     function clearWatchlistData() {
         localStorage.removeItem("watchlistData");
-    }    
+    }
 
     async function main() {
         clearWatchlistData();
         var links = getLinks();
         console.log(links);
-        for (let i = 0; i < links.length; i++) {
-            console.log(links[i]);
-            await openQuick(links[i]);
-        }
-        let watchlistData = localStorage.getItem("watchlistData")
-        console.log(watchlistData);
-        downloadCsvFile(JSON.parse(watchlistData));
+        const movieDataPromises = links.map(fetchAndParseData);
+        const allMovieData = (await Promise.all(movieDataPromises)).filter(data => data !== null);
+    
+        localStorage.setItem("watchlistData", JSON.stringify(allMovieData));
+        console.log(allMovieData);
+        downloadCsvFile(allMovieData);
     }
-
-    function scrapeMovieData() {
-        const genreMap = new Map();
-        const defaultClient = __APOLLO_STATE__.defaultClient;
-    
-        const keys = Object.keys(defaultClient).filter(k => k.match(/Movie.*content.*\)$/));
-        const movieKey = keys.reduce((a, b) => Object.keys(defaultClient[a]).length > Object.keys(defaultClient[b]).length ? a : b);
-        const movie = defaultClient[movieKey];
-    
-        const externalIds = Object.keys(defaultClient).filter(k => k.match(/Movie.*content.*\).externalIds$/));
-        const imdbid = externalIds.length > 0 ? defaultClient[externalIds.find(k => "imdbId" in defaultClient[k])].imdbId : "";
-    
-        const genreKeys = Object.keys(defaultClient).filter(k => k.match(/^Genre:/));
-        genreKeys.forEach(genreKey => {
-            const genreObj = defaultClient[genreKey];
-            genreMap.set(genreObj.shortName, genreObj["slug({\"language\":\"en\"})"]);
-        });
-    
-        const creditKeys = movie.credits.map(credit => credit.id);
-        const directors = creditKeys.map(k => defaultClient[k]).filter(credit => credit.role === "DIRECTOR").map(credit => credit.name);
-        directors.sort();
-    
-        const title = movie.title;
-        const ogtitle = movie.originalTitle;
-        const genres = movie.genres.map(genre => genreMap.get(defaultClient[genre.id].shortName));
-    
-        const duration = movie.runtime;
-        return {
-            englishTitle: title,
-            originalTitle: ogtitle,
-            director: directors,
-            imdbID: imdbid,
-            releaseYear: movie.originalReleaseYear,
-            releaseDate: movie.originalReleaseDate || "",
-            runtime: duration,
-            ageCertification: movie.ageCertification,
-            genres: genres.sort()
-        };
-    }
-
-    main();
 })()
