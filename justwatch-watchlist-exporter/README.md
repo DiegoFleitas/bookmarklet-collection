@@ -10,7 +10,7 @@ This JavaScript bookmarklet scrapes movie data from the JustWatch watchlist page
 - **Download CSV**: Downloads the SIMKL ready CSV file.
 
 ## Pre-requisites
-- The JustWatch website must be set to the English language.
+- The JustWatch website must be set to the English language to ensure the most complete and best available data is scraped.
 
 ## Usage Instructions
 1. **Bookmark the Script**: Save the JavaScript code as a bookmark in your browser.
