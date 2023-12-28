@@ -1,18 +1,16 @@
 # JustWatch watchlist exporter
 
 ## Overview
-This JavaScript bookmarklet scrapes movie data from the JustWatch watchlist page. It gathers information about movies listed on JustWatch pages and storing this data in the browser's `localStorage` for further use. The script operates by opening each movie link in a new window, scraping relevant data, and then saving it to `localStorage`. The script also converts this data into a CSV file compatible with SIMKL's format & once the data is processed, the script facilitates the download of this CSV file.
+This JavaScript bookmarklet scrapes movie data from the JustWatch watchlist page. It gathers information about movies listed on JustWatch pages and storing this data in the browser's `localStorage` for further use. The script operates by fetching each movie link html, scraping relevant data, and then saving it to `localStorage`. The script also converts this data into a CSV file compatible with SIMKL's format & once the data is processed, the script facilitates the download of this CSV file.
 
 ## Functionality
 - **Open and Scrape**: Opens each JustWatch movie link in a new window and scrapes detailed information about the movie.
 - **Data Storage**: Stores the scraped data in an array within the browser's `localStorage`.
 - **CSV Conversion**: Converts the stored data into a CSV format following SIMKL guidelines.
-- **Automatic Closure**: Closes each window automatically after scraping is done to streamline the process.
 - **Download CSV**: Downloads the SIMKL ready CSV file.
 
 ## Pre-requisites
 - The JustWatch website must be set to the English language.
-- The browser must allow pop-up windows, as the script opens new tabs/windows for each movie link.
 
 ## Usage Instructions
 1. **Bookmark the Script**: Save the JavaScript code as a bookmark in your browser.
