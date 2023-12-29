@@ -1,4 +1,4 @@
-# bookmarklet-collection
+# Diego's Bookmarklet collection
 
 A collection of old bookmarklets I wrote and still use once in a full moon. Most of them are not actively maintained and may not work as expected today.
 Better placed on a repo than among the (too many) bookmarks on my Firefox browser
