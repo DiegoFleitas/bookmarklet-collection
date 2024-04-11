@@ -41,6 +41,10 @@
         readmeLink.href = readmeUrl;
         readmeLink.textContent = "README";
         readmeLink.style.marginLeft = "10px"; // Add some space between the links
+        readmeLink.style.fontSize = '0.8em'; // make the text smaller
+        readmeLink.style.color = '#888'; // change the color to a less prominent one
+        readmeLink.style.fontStyle = 'italic'; // make the text italic
+        readmeLink.style.border = 'none'; // remove the border
         listItem.appendChild(readmeLink);
 
         document.getElementById("bookmarklet-list").appendChild(listItem);
