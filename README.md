@@ -7,4 +7,4 @@ Better placed on a repo than among the (too many) bookmarks on my Firefox browse
 
 - [JS Builder](http://subsimple.com/bookmarklets/jsbuilder.htm): A tool for creating and testing bookmarklets.
 - [Esprima Validator](https://esprima.org/demo/validate.html): A JavaScript syntax validator to ensure your code is free of syntax errors. (This won't catch comments, remember you can't have those in a single-line bookmarklet :wink:)
-- [Purge jsDeliver CDN cache](https://www.jsdelivr.com/tools/purge)
+- [Purge jsDeliver CDN cache](https://www.jsdelivr.com/tools/purge) ex: https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/justwatch-watchlist-exporter/index.js
