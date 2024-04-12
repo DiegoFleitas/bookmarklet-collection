@@ -1,13 +1,10 @@
 # JustWatch watchlist exporter
 
-> [!IMPORTANT]
-> The JustWatch website must be set to the English language & the United States region to ensure the most complete and best available data is scraped. It's best if you use this link https://www.justwatch.com/us/lists/my-lists?content_type=movie
-
 ## Overview
-This JavaScript bookmarklet scrapes movie data from the JustWatch watchlist page. It gathers information about movies listed on JustWatch pages and storing this data in the browser's `localStorage` for further use. The script operates by fetching each movie link html, scraping relevant data, and then saving it to `localStorage`. The script also converts this data into a CSV file compatible with SIMKL's format & once the data is processed, the script facilitates the download of this CSV file.
+This JavaScript bookmarklet scrapes media data from the JustWatch watchlist page. It gathers information about tv shows & movies listed on JustWatch pages and stores this data in the browser's `localStorage` for further use. The script operates by making GraphQL requests to fetch detailed information about each media item, and then saving it to `localStorage`. The script also converts this data into a CSV file compatible with SIMKL's format & once the data is processed, the script facilitates the download of this CSV file.
 
 ## Functionality
-- **Open and Scrape**: Opens each JustWatch movie link in a new window and scrapes detailed information about the movie.
+- **Fetch and Scrape**: Fetches detailed information about each media item using GraphQL and scrapes the relevant data.
 - **Data Storage**: Stores the scraped data in an array within the browser's `localStorage`.
 - **CSV Conversion**: Converts the stored data into a CSV format following SIMKL guidelines.
 - **Download CSV**: Downloads the SIMKL ready CSV file.
@@ -17,24 +14,22 @@ This JavaScript bookmarklet scrapes movie data from the JustWatch watchlist page
 
 ## Usage Instructions
 1. **Bookmark the Script**: Save the JavaScript code as a bookmark in your browser.
-2. **Navigate to JustWatch**: Go to a JustWatch page with movie listings (e.g., genre page, search results).
+2. **Navigate to JustWatch**: Go to any JustWatch page after logging in.
 3. **Execute the Bookmarklet**: Click on the saved bookmark while on the JustWatch page.
-4. **View Results**: After the script finishes running, check `localStorage` for the key `watchlistData` to see the scraped movie data.
+4. **View Results**: After the script finishes running, check `localStorage` for the key `watchlistData` to see the scraped media data.
 
 ## Data Scraped
-The script extracts the following details for each movie:
+The script extracts the following details for each media item:
 - English Title
 - Original Title
-- Directors
 - IMDb ID
 - Release Year
 - Release Date
 - Runtime
 - Age Certification
-- Genres
+- Media Type
 
 ## Notes
-- **Execution Time**: The script includes a delay to ensure each page loads fully. This may require adjustment based on internet speed.
 - **Data Consistency**: The script assumes a consistent data format from JustWatch.
 - **Error Handling**: In its current form, the script does not include extensive error handling.
 - **Browser Compatibility**: The script should be tested in various browsers for compatibility.
