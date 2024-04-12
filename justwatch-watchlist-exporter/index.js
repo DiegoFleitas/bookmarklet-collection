@@ -1,6 +1,4 @@
 javascript: (async function () {
-    /* PRE: switch to ENG language on JustWatch website if not already */
-    /* PRE: allow emergent windows on browser if popup appears */
     main();
 
     async function fetchAndParseData(link) {
