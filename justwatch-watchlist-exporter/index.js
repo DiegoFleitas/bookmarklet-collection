@@ -193,7 +193,7 @@ javascript: (async function () {
                         "ageCertifications": [],
                         "excludeGenres": [],
                         "excludeProductionCountries": [],
-                        "objectTypes": ["MOVIE"],
+                        "objectTypes": ["MOVIE", "SHOW"],
                         "productionCountries": [],
                         "subgenres": [],
                         "genres": [],
@@ -223,26 +223,17 @@ javascript: (async function () {
             const response = await fetch("https://apis.justwatch.com/graphql", requestOptions);
             const data = await response.json();
             return data.data.titleListV2.edges.map(edge => {
-                const movie = edge.node.content;
-
-
-                const title = movie.title;
-                const ogtitle = movie.title;
-                const directors = [];
-                const imdbid = movie.externalIds.imdbId;
-                const duration = null;
-
+                const media = edge.node.content;
 
                 return {
-                    englishTitle: title,
-                    originalTitle: ogtitle,
-                    director: directors,
-                    imdbID: imdbid,
-                    releaseYear: movie.originalReleaseYear,
+                    englishTitle: media.title,
+                    originalTitle: media.title,
+                    imdbID: media.externalIds.imdbId,
+                    releaseYear: media.originalReleaseYear,
                     releaseDate: "",
-                    runtime: duration,
+                    runtime: null,
                     ageCertification: null,
-                    genres: []
+                    type: edge.node.objectType
                 };
             });
         } catch (error) {
@@ -279,7 +270,7 @@ javascript: (async function () {
                         value = row.imdbID || '';
                         break;
                     case "Type":
-                        value = "movie"; /* Assuming all are movies, adjust as needed */
+                        value = row.type || '';
                         break;
                     case "Title":
                         value = row.englishTitle || '';
