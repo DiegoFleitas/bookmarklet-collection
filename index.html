@@ -24,8 +24,9 @@
       const readmeUrl = `https://github.com/DiegoFleitas/bookmarklet-collection/blob/main/${folderName}/README.md`;
       const name = folderName.replace(/-/g, " "); // Convert hyphens to spaces for a readable name
       try {
-        const cacheBuster = new Date().getTime();
-        const response = await fetch(`${url}?${cacheBuster}`);
+        // const cacheBuster = new Date().getTime();
+        // const response = await fetch(`${url}?${cacheBuster}`);
+        const response = await fetch(`${url}`);
         const code = await response.text();
         const listItem = document.createElement("li");
         const link = document.createElement("a");
