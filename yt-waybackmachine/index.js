@@ -1,5 +1,5 @@
 (() => {
-let url = "https://web.archive.org/web/20130720113437oe_/http://wayback-fakeurl.archive.org/yt/7VcYz6KZtqs";
+let url = "https://web.archive.org/web/20130720113437oe_/http://wayback-fakeurl.archive.org/yt/";
 
 // Prompt for YouTube ID
 let youtubeId = prompt("Enter the YouTube ID:");
