@@ -12,11 +12,11 @@ Visit [the live page](https://diegofleitas.github.io/bookmarklet-collection/) to
 - **Root:** One directory per bookmarklet. Each has `index.js` (the bookmarklet code) and optionally `README.md`.
 - **docs/:** The GitHub Pages site (`index.html`) and the integrity manifest (`bookmarklet-integrity.json`). The site is served from the `main` branch with source folder `/docs`.
 - **scripts/:** `update-integrity.js` regenerates the integrity manifest; `verify-integrity.js` is used by CI.
-- **.github/workflows/:** CI checks the Pages entrypoint, that every bookmarklet dir has `index.js`, and that the integrity manifest matches current `index.js` hashes.
+- **.github/workflows/:** CI checks that `docs/` and the integrity manifest are present and in sync with `index.js` files.
 
-## How discovery works
+## How the page works
 
-The live page fetches the repo directory list from the GitHub API (`GET .../git/trees/main?recursive=1`), keeps only **top-level** directories, and excludes `docs`, `.github`, `scripts`, and any name starting with `.`. The exclude list is defined once in `docs/index.html` (`EXCLUDED_DIRS`); CI reads it from there. For each remaining directory it loads `index.js` via [jsDelivr](https://www.jsdelivr.com/github) from `main`, verifies its SHA-384 hash against `docs/bookmarklet-integrity.json`, and only then builds a draggable link. No manual edit of `docs/index.html` is needed when adding or removing bookmarklets.
+The live page loads `bookmarklet-integrity.json` (same origin). That manifest lists bookmarklet folder names and their SHA-384 hashes. For each entry it fetches `index.js` from [jsDelivr](https://www.jsdelivr.com/github), verifies the hash, and builds a draggable link. No GitHub API; one manifest fetch plus one script fetch per bookmarklet.
 
 ## Integrity
 
@@ -33,7 +33,6 @@ The page only embeds bookmarklet code whose SHA-384 hash matches the committed m
 ## Limitations
 
 - **CSP and browser rules:** Many sites block `javascript:` bookmarks or restrict cross-origin scripts. Bookmarklets only run where the browser and site allow.
-- **GitHub API:** Unauthenticated requests are limited (e.g. 60/hour). If the live page hits the limit, the list may not load until the window resets.
 - **jsDelivr cache:** After updating a bookmarklet, the CDN may serve an old copy. Use [Purge jsDelivr CDN cache](https://www.jsdelivr.com/tools/purge) if needed (e.g. `https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/my-bookmarklet/index.js`).
 
 ## GitHub Pages setup
