@@ -62,7 +62,6 @@ for (const dir of dirs) {
 }
 
 const manifestDirs = Object.keys(manifest).sort();
-const dirsSet = new Set(dirs);
 for (const dir of manifestDirs) {
   if (!dirsSet.has(dir)) {
     console.error(`Manifest has extra entry for missing dir: ${dir}. Run scripts/update-integrity.js`);
