@@ -77,20 +77,13 @@
         a.textContent = displayName;
         a.onclick = () => false;
         li.appendChild(a);
-        // Optionally add README link if the README.md file exists.
-        try {
-          const readmeResponse = await fetch(readmeUrl, { method: "HEAD" });
-          if (readmeResponse.ok) {
-            const readme = document.createElement("a");
-            readme.href = readmeUrl;
-            readme.className = "readme";
-            readme.textContent = "README";
-            readme.target = "_blank";
-            li.appendChild(readme);
-          }
-        } catch (e) {
-          // Ignore README errors; README files are optional.
-        }
+        // Add README link for all bookmarklets (README files are optional).
+        const readme = document.createElement("a");
+        readme.href = readmeUrl;
+        readme.className = "readme";
+        readme.textContent = "README";
+        readme.target = "_blank";
+        li.appendChild(readme);
         listEl.appendChild(li);
       } catch (err) {
         listEl.appendChild(Object.assign(document.createElement("li"), {
