@@ -5,14 +5,13 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 
-const EXCLUDED_DIRS = ["docs", ".github", "scripts"];
 const REPO_ROOT = path.resolve(__dirname, "..");
 const MANIFEST_PATH = path.join(REPO_ROOT, "docs", "bookmarklet-integrity.json");
 
 function isBookmarkletDir(name) {
   if (name.startsWith(".")) return false;
-  if (EXCLUDED_DIRS.includes(name)) return false;
-  return true;
+  const indexPath = path.join(REPO_ROOT, name, "index.js");
+  return fs.existsSync(indexPath);
 }
 
 function sha384Base64(content) {
@@ -32,10 +31,6 @@ const manifest = {};
 
 for (const dir of dirs) {
   const indexPath = path.join(REPO_ROOT, dir, "index.js");
-  if (!fs.existsSync(indexPath)) {
-    console.error(`Skipping ${dir}: no index.js`);
-    continue;
-  }
   const content = fs.readFileSync(indexPath, "utf8");
   manifest[dir] = "sha384-" + sha384Base64(content);
 }
