@@ -7,65 +7,29 @@ on:
     branches: [main]
 
 jobs:
-  entrypoint:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check docs entrypoint exists
+      - name: Check docs
         run: |
           test -f docs/index.html || { echo "Missing docs/index.html"; exit 1; }
-
-      - name: Check docs/index.html contains required strings
-        run: |
           grep -q 'id="bookmarklet-list"' docs/index.html || { echo "Missing #bookmarklet-list"; exit 1; }
-          grep -q 'loadBookmarklet' docs/index.html || { echo "Missing loadBookmarklet"; exit 1; }
-          grep -q 'git/trees/main' docs/index.html || { echo "Missing GitHub API URL"; exit 1; }
-
-  bookmarklet-dirs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Verify bookmarklet structure
-        run: |
-          # The integrity check already validates that all bookmarklet dirs
-          # (those with index.js) are in the manifest, so this just confirms
-          # the basic structure is sound by listing what will be processed.
-          echo "Checking bookmarklet directories..."
-          found=0
-          for d in */; do
-            name="${d%/}"
-            # Skip hidden directories
-            if [[ "$name" == .* ]]; then continue; fi
-            # If directory has index.js, it's a bookmarklet
-            if [[ -f "${name}/index.js" ]]; then
-              echo "  ✓ ${name}"
-              found=$((found + 1))
-            fi
-          done
-          echo "Found ${found} bookmarklet(s)"
-          if [[ $found -eq 0 ]]; then
-            echo "ERROR: No bookmarklets found!"
+          grep -q 'loadOne(' docs/index.html || { echo "Missing loadOne() loader"; exit 1; }
+          test -f docs/bookmarklet-integrity.json || { echo "Missing bookmarklet-integrity.json"; exit 1; }
+          # Ensure there is at least one bookmarklet in the manifest
+          which jq >/dev/null 2>&1 || { echo "jq command not found"; exit 1; }
+          count=$(jq 'length' docs/bookmarklet-integrity.json 2>/dev/null) || { echo "Failed to parse docs/bookmarklet-integrity.json (invalid JSON)"; exit 1; }
+          if [ "$count" -eq 0 ]; then
+            echo "No bookmarklets found in docs/bookmarklet-integrity.json"
             exit 1
           fi
 
-  integrity:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      - name: Verify integrity manifest
+        run: node scripts/verify-integrity.js
 
-      - name: Verify bookmarklet integrity manifest
-        run: |
-          test -f docs/bookmarklet-integrity.json || { echo "Missing docs/bookmarklet-integrity.json"; exit 1; }
-          node scripts/verify-integrity.js
-
-  link-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check links in README and docs
+      - name: Check links
         uses: lycheeverse/lychee-action@v1
         with:
           args: 'README.md docs/index.html --no-progress --timeout 10'
