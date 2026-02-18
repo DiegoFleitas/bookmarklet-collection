@@ -1,0 +1,16 @@
+{
+  "add-tmdb-film-to-letterboxd": "sha384-fnhVbJSgnIo91t9R4tW/GshDxYvftx0p1KVGpi+Eq+jgUyqPLzzfGycGjsUh7fbW",
+  "bypass-article-paywall": "sha384-fRUsN/+WYuVorMkIfDLnY1fy/pCrC8iLKiVq7FdaeW6m3dKAMNjo8Vc36oVuGW/I",
+  "clone-letterboxd-list-to-csv": "sha384-wWIfnQfpYw6WrL3WIY1YJRykF0zndCBjhGScyCyIxDY8ICpYKtk2V/rzfqwwt5dA",
+  "discord-everyone-tagger": "sha384-Iferq+X7GL+is2QelIoQa+hG7RFVTkH49mI2hfzdZRuE02slYBHKkfHDLiya51yx",
+  "discord-swiper": "sha384-fcSYXf8Q8FqZzZxzn47fWo84HFhzvzKDiQpklGul8NLWCet07vAC2n/RbXVvL3tQ",
+  "dom-change-debugger": "sha384-FC93I6wtObparNEpE/O/vJDTttNQAEE1FVvxuW8VJVA6A/WFy9beFQuFmUQZ208B",
+  "find-sourceban": "sha384-rh95FTWiUZRqf0ZguD7dn2olOjW/nFx4vi9YhSxM2iajJztSQRZN0hOkEuJd6MLR",
+  "justwatch-watchlist-exporter": "sha384-TRFihZmM9ouV78GHTkoUyzMZwgEI73RBl0XErmuU/xNCh5PjtxNBJPqnC6U+yeBf",
+  "parse-sourcebans": "sha384-Bp5dSaVyomHRLjtAiHus6E+pfkOkyOyzlBx4gOqDIw+o3kVL3dKxvMBuZzWlrDHD",
+  "quick-open-steamiduk": "sha384-bDhVt1G3PjnhvMtjXLXj3MXKY0jQvSQVukYbHcSAnB69ExfHyg4lc+/CHe2ZVkWq",
+  "steam-group-snooper": "sha384-PrGaV6xaBUjx+711x0jh7wgURW45R6AKlGdLPeV6Zl5NsAT7wk7iq4eutbSdvZqZ",
+  "top-down-buttons": "sha384-5Rx28WWafPZI41dhujPsfbdsl6GVy56IQNshfdAls6MrIflavbZ1EL11mXNNSiHb",
+  "yt-auto-playlist": "sha384-ET0tJmxD3hAWTuRDP/bF/OkZy0FOgdf9hYa6gImtJm744RuLJxtlYkzSryiOe/jZ",
+  "yt-waybackmachine": "sha384-ndz6i/FK+C6fVPOo4nAkNiJeXquYI3PfqQHsEQI2zAtq2mxHHElCyfGx4MkHLaLl"
+}

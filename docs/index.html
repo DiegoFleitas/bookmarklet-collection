@@ -21,7 +21,7 @@
   <script>
     // Directories to exclude from bookmarklet discovery (site/infra, not bookmarklets).
     // CI (.github/workflows/pages-check.yml) reads this list; keep as single source of truth.
-    const EXCLUDED_DIRS = ["docs", ".github"];
+    const EXCLUDED_DIRS = ["docs", ".github", "scripts"];
 
     function showError(message) {
       const errorDiv = document.getElementById("error-message");
@@ -60,8 +60,16 @@
       return true;
     }
 
-    // Function to fetch the bookmarklet code and create a draggable link
-    async function loadBookmarklet(folderName) {
+    // Compute SHA-384 of UTF-8 string, return "sha384-<base64>"
+    async function sha384Base64(text) {
+      const data = new TextEncoder().encode(text);
+      const hash = await crypto.subtle.digest("SHA-384", data);
+      const base64 = btoa(String.fromCharCode(...new Uint8Array(hash)));
+      return "sha384-" + base64;
+    }
+
+    // Function to fetch the bookmarklet code and create a draggable link (only if integrity matches)
+    async function loadBookmarklet(folderName, integrityManifest) {
       const url = `https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/${folderName}/index.js`;
       const readmeUrl = `https://github.com/DiegoFleitas/bookmarklet-collection/blob/main/${folderName}/README.md`;
       const name = folderName.replace(/-/g, " "); // Convert hyphens to spaces for a readable name
@@ -79,6 +87,23 @@
         // Validate the fetched code
         if (!looksLikeJavaScript(code)) {
           throw new Error('Invalid or missing JavaScript code');
+        }
+
+        const expectedHash = integrityManifest[folderName];
+        if (!expectedHash) {
+          const listItem = document.createElement("li");
+          listItem.style.color = "#d32f2f";
+          listItem.textContent = name + " — integrity manifest missing; not loaded.";
+          document.getElementById("bookmarklet-list").appendChild(listItem);
+          return;
+        }
+        const actualHash = await sha384Base64(code);
+        if (actualHash !== expectedHash) {
+          const listItem = document.createElement("li");
+          listItem.style.color = "#d32f2f";
+          listItem.textContent = name + " — integrity check failed (code may have changed).";
+          document.getElementById("bookmarklet-list").appendChild(listItem);
+          return;
         }
         
         const listItem = document.createElement("li");
@@ -117,9 +142,23 @@
 
     // Function to fetch the list of directories in the repository and load the bookmarklets
     async function loadAllBookmarklets() {
+      const manifestUrl = "bookmarklet-integrity.json";
       const repoContentUrl =
         "https://api.github.com/repos/DiegoFleitas/bookmarklet-collection/git/trees/main?recursive=1";
       try {
+        const manifestRes = await fetch(manifestUrl);
+        if (!manifestRes.ok) {
+          showError("Integrity manifest unavailable. Bookmarklets cannot be loaded.");
+          return;
+        }
+        let integrityManifest;
+        try {
+          integrityManifest = await manifestRes.json();
+        } catch (e) {
+          showError("Integrity manifest invalid. Bookmarklets cannot be loaded.");
+          return;
+        }
+
         const response = await fetch(repoContentUrl);
         
         // Check HTTP status before parsing
@@ -140,7 +179,7 @@
         }
         
         for (const directory of directories) {
-          loadBookmarklet(directory.path);
+          loadBookmarklet(directory.path, integrityManifest);
         }
       } catch (error) {
         console.error("Error loading directory list:", error);
