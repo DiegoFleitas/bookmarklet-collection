@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookmarklet Collection</title>
+</head>
+
+<body>
+  <h1>Diego's Bookmarklet Collection</h1>
+  <p>
+    Drag the links below to your bookmarks bar, once added you simply need to
+    click them to run the code.
+  </p>
+  <ul id="bookmarklet-list">
+    <!-- Bookmarklets will be added here by JavaScript -->
+  </ul>
+
+  <script>
+    // Directories to exclude from bookmarklet discovery (site/infra, not bookmarklets).
+    // CI (.github/workflows/pages-check.yml) reads this list; keep as single source of truth.
+    const EXCLUDED_DIRS = ["docs", ".github"];
+
+    function isBookmarkletDir(item) {
+      if (item.type !== "tree") return false;
+      const path = item.path;
+      if (path.indexOf("/") !== -1) return false; // top-level only
+      if (EXCLUDED_DIRS.includes(path)) return false;
+      if (path.startsWith(".")) return false;
+      return true;
+    }
+
+    // Function to fetch the bookmarklet code and create a draggable link
+    async function loadBookmarklet(folderName) {
+      const url = `https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/${folderName}/index.js`;
+      const readmeUrl = `https://github.com/DiegoFleitas/bookmarklet-collection/blob/main/${folderName}/README.md`;
+      const name = folderName.replace(/-/g, " "); // Convert hyphens to spaces for a readable name
+      try {
+        const cacheBuster = new Date().getTime();
+        const response = await fetch(`${url}?${cacheBuster}`);
+        const code = await response.text();
+        const listItem = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = `javascript:${encodeURIComponent(code)}`;
+        link.textContent = name;
+        link.onclick = function () {
+          return false;
+        }; // disable clicking on the link
+        listItem.appendChild(link);
+
+        // Create a link to the README
+        const readmeLink = document.createElement("a");
+        readmeLink.href = readmeUrl;
+        readmeLink.textContent = "README";
+        readmeLink.style.marginLeft = "10px";
+        readmeLink.style.fontSize = "0.8em";
+        readmeLink.style.color = "#888";
+        readmeLink.style.fontStyle = "italic";
+        readmeLink.style.border = "none";
+        listItem.appendChild(readmeLink);
+
+        document.getElementById("bookmarklet-list").appendChild(listItem);
+      } catch (error) {
+        console.error("Error loading bookmarklet:", error);
+      }
+    }
+
+    // Function to fetch the list of directories in the repository and load the bookmarklets
+    async function loadAllBookmarklets() {
+      const repoContentUrl =
+        "https://api.github.com/repos/DiegoFleitas/bookmarklet-collection/git/trees/main?recursive=1";
+      try {
+        const response = await fetch(repoContentUrl);
+        const data = await response.json();
+        const directories = data.tree.filter(isBookmarkletDir);
+        for (const directory of directories) {
+          loadBookmarklet(directory.path);
+        }
+      } catch (error) {
+        console.error("Error loading directory list:", error);
+      }
+    }
+
+    // Load all the bookmarklets
+    loadAllBookmarklets();
+  </script>
+  <style>
+    body {
+      font-family: "Roboto", sans-serif;
+      font-size: 18px;
+      background-color: #ffffff;
+      color: #333333;
+      padding: 20px;
+    }
+
+    header {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    #bookmarklet-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    #bookmarklet-list li {
+      margin-bottom: 10px;
+    }
+
+    #bookmarklet-list a {
+      color: #007bff;
+      border: 1px solid #007bff;
+      padding: 5px;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    #bookmarklet-list a:hover {
+      background-color: #007bff;
+      color: #ffffff;
+    }
+
+    p {
+      margin-bottom: 20px;
+    }
+  </style>
+</body>
+
+</html>
