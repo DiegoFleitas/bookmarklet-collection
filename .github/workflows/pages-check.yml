@@ -16,7 +16,14 @@ jobs:
         run: |
           test -f docs/index.html || { echo "Missing docs/index.html"; exit 1; }
           grep -q 'id="bookmarklet-list"' docs/index.html || { echo "Missing #bookmarklet-list"; exit 1; }
+          grep -q 'loadOne(' docs/index.html || { echo "Missing loadOne() loader"; exit 1; }
           test -f docs/bookmarklet-integrity.json || { echo "Missing bookmarklet-integrity.json"; exit 1; }
+          # Ensure there is at least one bookmarklet in the manifest
+          count=$(jq 'length' docs/bookmarklet-integrity.json 2>/dev/null) || { echo "Failed to parse docs/bookmarklet-integrity.json"; exit 1; }
+          if [ "$count" -eq 0 ]; then
+            echo "No bookmarklets found in docs/bookmarklet-integrity.json"
+            exit 1
+          fi
 
       - name: Verify integrity manifest
         run: node scripts/verify-integrity.js
