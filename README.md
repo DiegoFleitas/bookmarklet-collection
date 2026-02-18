@@ -10,19 +10,25 @@ Visit [the live page](https://diegofleitas.github.io/bookmarklet-collection/) to
 ## Repo layout
 
 - **Root:** One directory per bookmarklet. Each has `index.js` (the bookmarklet code) and optionally `README.md`.
-- **docs/:** The GitHub Pages site (single `index.html`). The site is served from the `main` branch with source folder `/docs`.
-- **.github/workflows/:** CI that checks the Pages entrypoint and that every bookmarklet dir has `index.js`.
+- **docs/:** The GitHub Pages site (`index.html`) and the integrity manifest (`bookmarklet-integrity.json`). The site is served from the `main` branch with source folder `/docs`.
+- **scripts/:** `update-integrity.js` regenerates the integrity manifest; `verify-integrity.js` is used by CI.
+- **.github/workflows/:** CI checks the Pages entrypoint, that every bookmarklet dir has `index.js`, and that the integrity manifest matches current `index.js` hashes.
 
 ## How discovery works
 
-The live page fetches the repo directory list from the GitHub API (`GET .../git/trees/main?recursive=1`), keeps only **top-level** directories, and excludes `docs`, `.github`, and any name starting with `.`. The exclude list is defined once in `docs/index.html` (`EXCLUDED_DIRS`); CI reads it from there. For each remaining directory it loads `index.js` via [jsDelivr](https://www.jsdelivr.com/github) from `main` and builds a draggable link. No manual edit of `docs/index.html` is needed when adding or removing bookmarklets.
+The live page fetches the repo directory list from the GitHub API (`GET .../git/trees/main?recursive=1`), keeps only **top-level** directories, and excludes `docs`, `.github`, `scripts`, and any name starting with `.`. The exclude list is defined once in `docs/index.html` (`EXCLUDED_DIRS`); CI reads it from there. For each remaining directory it loads `index.js` via [jsDelivr](https://www.jsdelivr.com/github) from `main`, verifies its SHA-384 hash against `docs/bookmarklet-integrity.json`, and only then builds a draggable link. No manual edit of `docs/index.html` is needed when adding or removing bookmarklets.
+
+## Integrity
+
+The page only embeds bookmarklet code whose SHA-384 hash matches the committed manifest (`docs/bookmarklet-integrity.json`). If the CDN or the repo were compromised, changed code would not match and the link would not be created. After editing any bookmarklet’s `index.js`, you must regenerate the manifest and commit it (see Adding a bookmarklet).
 
 ## Adding a bookmarklet
 
 1. Create a new **root-level** directory, e.g. `my-bookmarklet/`.
 2. Add `index.js` with the bookmarklet code (single line, no comments; use [Esprima](https://esprima.org/demo/validate.html) to validate).
 3. Optionally add `README.md` describing what it does.
-4. Push to `main`. The live page will pick it up automatically.
+4. Run `node scripts/update-integrity.js` and commit the updated `docs/bookmarklet-integrity.json`.
+5. Push to `main`. The live page will pick it up automatically. CI will fail if the manifest is out of sync with any `index.js`.
 
 ## Limitations
 
