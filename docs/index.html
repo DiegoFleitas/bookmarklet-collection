@@ -111,7 +111,7 @@
         const names = Object.keys(manifest).sort();
         if (!names.length) throw new Error("No bookmarklets in list");
         const loadPromises = names.map(name => loadOne(name, manifest[name]));
-        await Promise.all(loadPromises);
+        await Promise.allSettled(loadPromises);
       } catch (err) {
         if (err instanceof SyntaxError) {
           showError("Could not parse bookmarklet list (invalid JSON)");

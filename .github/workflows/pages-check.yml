@@ -19,7 +19,8 @@ jobs:
           grep -q 'loadOne(' docs/index.html || { echo "Missing loadOne() loader"; exit 1; }
           test -f docs/bookmarklet-integrity.json || { echo "Missing bookmarklet-integrity.json"; exit 1; }
           # Ensure there is at least one bookmarklet in the manifest
-          count=$(jq 'length' docs/bookmarklet-integrity.json 2>/dev/null) || { echo "Failed to parse docs/bookmarklet-integrity.json"; exit 1; }
+          which jq >/dev/null 2>&1 || { echo "jq command not found"; exit 1; }
+          count=$(jq 'length' docs/bookmarklet-integrity.json 2>/dev/null) || { echo "Failed to parse docs/bookmarklet-integrity.json (invalid JSON)"; exit 1; }
           if [ "$count" -eq 0 ]; then
             echo "No bookmarklets found in docs/bookmarklet-integrity.json"
             exit 1
