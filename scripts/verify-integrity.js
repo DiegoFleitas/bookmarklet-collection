@@ -33,7 +33,7 @@ function loadManifest() {
   } catch (err) {
     console.error(`Failed to read or parse integrity manifest at: ${MANIFEST_PATH}`);
     console.error("Run scripts/update-integrity.js to (re)generate the manifest.");
-    if (err && err.message) {
+    if (err.message) {
       console.error(`Underlying error: ${err.message}`);
     }
     process.exit(1);
