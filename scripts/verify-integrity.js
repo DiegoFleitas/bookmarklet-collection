@@ -5,13 +5,14 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 
+const EXCLUDED_DIRS = ["docs", ".github", "scripts"];
 const REPO_ROOT = path.resolve(__dirname, "..");
 const MANIFEST_PATH = path.join(REPO_ROOT, "docs", "bookmarklet-integrity.json");
 
 function isBookmarkletDir(name) {
   if (name.startsWith(".")) return false;
-  const indexPath = path.join(REPO_ROOT, name, "index.js");
-  return fs.existsSync(indexPath);
+  if (EXCLUDED_DIRS.includes(name)) return false;
+  return true;
 }
 
 function sha384Base64(content) {
@@ -26,23 +27,8 @@ function getBookmarkletDirs() {
     .sort();
 }
 
-function loadManifest() {
-  try {
-    const raw = fs.readFileSync(MANIFEST_PATH, "utf8");
-    return JSON.parse(raw);
-  } catch (err) {
-    console.error(`Failed to read or parse integrity manifest at: ${MANIFEST_PATH}`);
-    console.error("Run scripts/update-integrity.js to (re)generate the manifest.");
-    if (err && err.message) {
-      console.error(`Underlying error: ${err.message}`);
-    }
-    process.exit(1);
-  }
-}
-
-const manifest = loadManifest();
+const manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, "utf8"));
 const dirs = getBookmarkletDirs();
-const dirsSet = new Set(dirs);
 let failed = false;
 
 for (const dir of dirs) {
@@ -68,7 +54,7 @@ for (const dir of dirs) {
 
 const manifestDirs = Object.keys(manifest).sort();
 for (const dir of manifestDirs) {
-  if (!dirsSet.has(dir)) {
+  if (!dirs.includes(dir)) {
     console.error(`Manifest has extra entry for missing dir: ${dir}. Run scripts/update-integrity.js`);
     failed = true;
   }
