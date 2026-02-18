@@ -30,7 +30,17 @@ jobs:
       - name: Ensure each bookmarklet dir has index.js
         run: |
           # Source excluded dirs from docs/index.html (single source of truth)
-          EXCLUDED=$(sed -n 's/.*EXCLUDED_DIRS = \[\([^]]*\)\].*/\1/p' docs/index.html | sed 's/"//g; s/,//g' | tr -s ' ' | xargs)
+          EXCLUDED_LINE=$(grep -m1 'EXCLUDED_DIRS' docs/index.html || true)
+          if [[ -z "$EXCLUDED_LINE" ]]; then
+            echo "Could not find EXCLUDED_DIRS definition in docs/index.html"
+            exit 1
+          fi
+          EXCLUDED=$(printf '%s\n' "$EXCLUDED_LINE" | sed -n 's/.*EXCLUDED_DIRS *= *\[\([^]]*\)\].*/\1/p' | sed 's/"//g; s/,//g' | tr -s ' ' | xargs)
+          if [[ -z "$EXCLUDED" ]]; then
+            echo "Failed to parse EXCLUDED_DIRS from docs/index.html"
+            exit 1
+          fi
+          echo "Excluded directories: $EXCLUDED"
           for d in */; do
             name="${d%/}"
             if [[ "$name" == .* ]]; then continue; fi
