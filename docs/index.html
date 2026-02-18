@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookmarklet Collection</title>
+</head>
+
+<body>
+  <h1>Diego's Bookmarklet Collection</h1>
+  <p>
+    Drag the links below to your bookmarks bar, once added you simply need to
+    click them to run the code.
+  </p>
+  <div id="error-message" style="display: none; color: #d32f2f; background-color: #ffebee; padding: 15px; border-radius: 5px; margin-bottom: 20px;"></div>
+  <ul id="bookmarklet-list">
+    <!-- Bookmarklets will be added here by JavaScript -->
+  </ul>
+
+  <script>
+    // Directories to exclude from bookmarklet discovery (site/infra, not bookmarklets).
+    // CI (.github/workflows/pages-check.yml) reads this list; keep as single source of truth.
+    const EXCLUDED_DIRS = ["docs", ".github"];
+
+    function showError(message) {
+      const errorDiv = document.getElementById("error-message");
+      errorDiv.textContent = message;
+      errorDiv.style.display = "block";
+    }
+
+    function isBookmarkletDir(item) {
+      if (item.type !== "tree") return false;
+      const path = item.path;
+      if (path.indexOf("/") !== -1) return false; // top-level only
+      if (EXCLUDED_DIRS.includes(path)) return false;
+      if (path.startsWith(".")) return false;
+      return true;
+    }
+
+    // Check if README exists by making a HEAD request
+    async function checkReadmeExists(folderName) {
+      const readmeUrl = `https://raw.githubusercontent.com/DiegoFleitas/bookmarklet-collection/main/${folderName}/README.md`;
+      try {
+        const response = await fetch(readmeUrl, { method: 'HEAD' });
+        return response.ok;
+      } catch {
+        return false;
+      }
+    }
+
+    // Basic validation to check if the response looks like JavaScript (not an error page)
+    function looksLikeJavaScript(code) {
+      // Check for empty responses
+      if (!code || code.trim().length === 0) return false;
+      // Check if it starts with common HTML error patterns
+      if (code.trim().startsWith('<!DOCTYPE') || code.trim().startsWith('<html')) return false;
+      // Try to detect if it's an error page
+      if (code.includes('<title>404') || code.includes('Not Found</title>')) return false;
+      return true;
+    }
+
+    // Function to fetch the bookmarklet code and create a draggable link
+    async function loadBookmarklet(folderName) {
+      const url = `https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/${folderName}/index.js`;
+      const readmeUrl = `https://github.com/DiegoFleitas/bookmarklet-collection/blob/main/${folderName}/README.md`;
+      const name = folderName.replace(/-/g, " "); // Convert hyphens to spaces for a readable name
+      try {
+        const cacheBuster = new Date().getTime();
+        const response = await fetch(`${url}?${cacheBuster}`);
+        
+        // Check HTTP status before processing
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const code = await response.text();
+        
+        // Validate the fetched code
+        if (!looksLikeJavaScript(code)) {
+          throw new Error('Invalid or missing JavaScript code');
+        }
+        
+        const listItem = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = `javascript:${encodeURIComponent(code)}`;
+        link.textContent = name;
+        link.onclick = function () {
+          return false;
+        }; // disable clicking on the link
+        listItem.appendChild(link);
+
+        // Check if README exists before creating link
+        const readmeExists = await checkReadmeExists(folderName);
+        if (readmeExists) {
+          const readmeLink = document.createElement("a");
+          readmeLink.href = readmeUrl;
+          readmeLink.textContent = "README";
+          readmeLink.style.marginLeft = "10px";
+          readmeLink.style.fontSize = "0.8em";
+          readmeLink.style.color = "#888";
+          readmeLink.style.fontStyle = "italic";
+          readmeLink.style.border = "none";
+          listItem.appendChild(readmeLink);
+        }
+
+        document.getElementById("bookmarklet-list").appendChild(listItem);
+      } catch (error) {
+        console.error(`Error loading bookmarklet "${name}":`, error);
+        // Show a user-friendly error message
+        const listItem = document.createElement("li");
+        listItem.style.color = "#d32f2f";
+        listItem.textContent = `⚠️ ${name} (failed to load: ${error.message})`;
+        document.getElementById("bookmarklet-list").appendChild(listItem);
+      }
+    }
+
+    // Function to fetch the list of directories in the repository and load the bookmarklets
+    async function loadAllBookmarklets() {
+      const repoContentUrl =
+        "https://api.github.com/repos/DiegoFleitas/bookmarklet-collection/git/trees/main?recursive=1";
+      try {
+        const response = await fetch(repoContentUrl);
+        
+        // Check HTTP status before parsing
+        if (!response.ok) {
+          if (response.status === 403) {
+            throw new Error('GitHub API rate limit exceeded. Please wait a few minutes and refresh the page.');
+          } else {
+            throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+          }
+        }
+        
+        const data = await response.json();
+        const directories = data.tree.filter(isBookmarkletDir);
+        
+        if (directories.length === 0) {
+          showError('No bookmarklets found in the repository.');
+          return;
+        }
+        
+        for (const directory of directories) {
+          loadBookmarklet(directory.path);
+        }
+      } catch (error) {
+        console.error("Error loading directory list:", error);
+        showError(`Failed to load bookmarklets: ${error.message}`);
+      }
+    }
+
+    // Load all the bookmarklets
+    loadAllBookmarklets();
+  </script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      font-size: 18px;
+      background-color: #ffffff;
+      color: #333333;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    #bookmarklet-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    #bookmarklet-list li {
+      margin-bottom: 10px;
+    }
+
+    #bookmarklet-list a {
+      color: #007bff;
+      border: 1px solid #007bff;
+      padding: 5px;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    #bookmarklet-list a:hover {
+      background-color: #007bff;
+      color: #ffffff;
+    }
+
+    p {
+      margin-bottom: 20px;
+    }
+  </style>
+</body>
+
+</html>
