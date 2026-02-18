@@ -70,7 +70,7 @@
 
     // Function to fetch the bookmarklet code and create a draggable link (only if integrity matches)
     async function loadBookmarklet(folderName, integrityManifest) {
-      const url = `https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/${folderName}/index.js`;
+      const url = `https://cdn.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main/${folderName}/index.js`;
       const readmeUrl = `https://github.com/DiegoFleitas/bookmarklet-collection/blob/main/${folderName}/README.md`;
       const name = folderName.replace(/-/g, " "); // Convert hyphens to spaces for a readable name
       try {

@@ -33,7 +33,7 @@ function loadManifest() {
   } catch (err) {
     console.error(`Failed to read or parse integrity manifest at: ${MANIFEST_PATH}`);
     console.error("Run scripts/update-integrity.js to (re)generate the manifest.");
-    if (err.message) {
+    if (err && err.message) {
       console.error(`Underlying error: ${err.message}`);
     }
     process.exit(1);
@@ -42,21 +42,17 @@ function loadManifest() {
 
 const manifest = loadManifest();
 const dirs = getBookmarkletDirs();
+const dirsSet = new Set(dirs);
 let failed = false;
 
 for (const dir of dirs) {
-  const indexPath = path.join(REPO_ROOT, dir, "index.js");
-  if (!fs.existsSync(indexPath)) {
-    console.error(`Bookmarklet dir ${dir}/ is missing index.js`);
-    failed = true;
-    continue;
-  }
   const expected = manifest[dir];
   if (expected === undefined) {
     console.error(`Manifest missing entry for: ${dir}. Run scripts/update-integrity.js`);
     failed = true;
     continue;
   }
+  const indexPath = path.join(REPO_ROOT, dir, "index.js");
   const content = fs.readFileSync(indexPath, "utf8");
   const actual = "sha384-" + sha384Base64(content);
   if (actual !== expected) {
