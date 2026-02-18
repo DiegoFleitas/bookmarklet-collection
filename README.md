@@ -16,7 +16,7 @@ Visit [the live page](https://diegofleitas.github.io/bookmarklet-collection/) to
 
 ## How the page works
 
-The live page loads `bookmarklet-integrity.json` (same origin). That manifest lists bookmarklet folder names and their SHA-384 hashes. For each entry it fetches `index.js` from [jsDelivr](https://www.jsdelivr.com/github), verifies the hash, and builds a draggable link. No GitHub API; one manifest fetch plus one script fetch per bookmarklet.
+The live page loads `bookmarklet-integrity.json` (same origin). That manifest lists bookmarklet folder names and their SHA-384 hashes. For each entry it fetches `index.js` from [jsDelivr](https://www.jsdelivr.com/github), verifies the hash, and builds a draggable link. Each bookmarklet also gets a README link pointing to its GitHub README.md file (which may or may not exist). No GitHub API; one manifest fetch plus one script fetch per bookmarklet.
 
 ## Integrity
 
