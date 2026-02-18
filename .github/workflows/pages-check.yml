@@ -1,0 +1,55 @@
+name: Pages check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  entrypoint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check docs entrypoint exists
+        run: |
+          test -f docs/index.html || { echo "Missing docs/index.html"; exit 1; }
+
+      - name: Check docs/index.html contains required strings
+        run: |
+          grep -q 'id="bookmarklet-list"' docs/index.html || { echo "Missing #bookmarklet-list"; exit 1; }
+          grep -q 'loadBookmarklet' docs/index.html || { echo "Missing loadBookmarklet"; exit 1; }
+          grep -q 'git/trees/main' docs/index.html || { echo "Missing GitHub API URL"; exit 1; }
+
+  bookmarklet-dirs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure each bookmarklet dir has index.js
+        run: |
+          # Source excluded dirs from docs/index.html (single source of truth)
+          EXCLUDED=$(sed -n 's/.*EXCLUDED_DIRS = \[\([^]]*\)\].*/\1/p' docs/index.html | sed 's/"//g; s/,//g' | tr -s ' ' | xargs)
+          for d in */; do
+            name="${d%/}"
+            if [[ "$name" == .* ]]; then continue; fi
+            if [[ " $EXCLUDED " == *" $name "* ]]; then continue; fi
+            if [[ ! -f "${name}/index.js" ]]; then
+              echo "Bookmarklet dir ${name}/ is missing index.js"
+              exit 1
+            fi
+          done
+
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check links in README and docs
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: 'README.md docs/index.html --no-progress --timeout 10'
+          fail: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
