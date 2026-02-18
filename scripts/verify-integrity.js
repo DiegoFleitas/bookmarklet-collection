@@ -46,13 +46,13 @@ const dirsSet = new Set(dirs);
 let failed = false;
 
 for (const dir of dirs) {
-  const indexPath = path.join(REPO_ROOT, dir, "index.js");
   const expected = manifest[dir];
   if (expected === undefined) {
     console.error(`Manifest missing entry for: ${dir}. Run scripts/update-integrity.js`);
     failed = true;
     continue;
   }
+  const indexPath = path.join(REPO_ROOT, dir, "index.js");
   const content = fs.readFileSync(indexPath, "utf8");
   const actual = "sha384-" + sha384Base64(content);
   if (actual !== expected) {
