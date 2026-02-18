@@ -21,6 +21,7 @@
     #bookmarklet-list a { color: #07c; border: 1px solid #07c; padding: 5px 8px; text-decoration: none; border-radius: 5px; }
     #bookmarklet-list a:hover { background: #07c; color: #fff; }
     #bookmarklet-list .readme { margin-left: 10px; font-size: 0.85em; color: #888; font-style: italic; }
+    #bookmarklet-list .error-item { color: #c00; }
   </style>
 </head>
 
@@ -65,8 +66,8 @@
         const actualHash = await sha384(code);
         if (actualHash !== expectedHash) {
           listEl.appendChild(Object.assign(document.createElement("li"), {
-            style: "color:#c00",
-            textContent: `${displayName} — integrity check failed`
+            className: "error-item",
+            textContent: `${displayName} — integrity check failed — the code may have been modified or the CDN cache is stale`
           }));
           return;
         }
@@ -76,16 +77,24 @@
         a.textContent = displayName;
         a.onclick = () => false;
         li.appendChild(a);
-        const readme = document.createElement("a");
-        readme.href = readmeUrl;
-        readme.className = "readme";
-        readme.textContent = "README";
-        readme.target = "_blank";
-        li.appendChild(readme);
+        // Optionally add README link if the README.md file exists.
+        try {
+          const readmeResponse = await fetch(readmeUrl, { method: "HEAD" });
+          if (readmeResponse.ok) {
+            const readme = document.createElement("a");
+            readme.href = readmeUrl;
+            readme.className = "readme";
+            readme.textContent = "README";
+            readme.target = "_blank";
+            li.appendChild(readme);
+          }
+        } catch (e) {
+          // Ignore README errors; README files are optional.
+        }
         listEl.appendChild(li);
       } catch (err) {
         listEl.appendChild(Object.assign(document.createElement("li"), {
-          style: "color:#c00",
+          className: "error-item",
           textContent: `⚠ ${displayName} — ${err.message}`
         }));
       }
@@ -93,16 +102,22 @@
 
     (async function () {
       try {
-        const res = await fetch("bookmarklet-integrity.json");
-        if (!res.ok) throw new Error("Could not load bookmarklet list");
+        // Manifest is expected to live alongside this HTML file.
+        // If the file is opened via file:// or moved to a different directory,
+        // this relative path may need to be updated.
+        const res = await fetch("./bookmarklet-integrity.json");
+        if (!res.ok) throw new Error(`Could not load bookmarklet list (HTTP ${res.status})`);
         const manifest = await res.json();
         const names = Object.keys(manifest).sort();
         if (!names.length) throw new Error("No bookmarklets in list");
-        for (const name of names) {
-          await loadOne(name, manifest[name]);
-        }
+        const loadPromises = names.map(name => loadOne(name, manifest[name]));
+        await Promise.allSettled(loadPromises);
       } catch (err) {
-        showError(err.message);
+        if (err instanceof SyntaxError) {
+          showError("Could not parse bookmarklet list (invalid JSON)");
+        } else {
+          showError(err.message);
+        }
       }
     })();
   </script>
