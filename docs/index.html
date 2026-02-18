@@ -5,6 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bookmarklet Collection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -13,6 +16,7 @@
     Drag the links below to your bookmarks bar, once added you simply need to
     click them to run the code.
   </p>
+  <div id="error-message" style="display: none; color: #d32f2f; background-color: #ffebee; padding: 15px; border-radius: 5px; margin-bottom: 20px;"></div>
   <ul id="bookmarklet-list">
     <!-- Bookmarklets will be added here by JavaScript -->
   </ul>
@@ -22,12 +26,40 @@
     // CI (.github/workflows/pages-check.yml) reads this list; keep as single source of truth.
     const EXCLUDED_DIRS = ["docs", ".github"];
 
+    function showError(message) {
+      const errorDiv = document.getElementById("error-message");
+      errorDiv.textContent = message;
+      errorDiv.style.display = "block";
+    }
+
     function isBookmarkletDir(item) {
       if (item.type !== "tree") return false;
       const path = item.path;
       if (path.indexOf("/") !== -1) return false; // top-level only
       if (EXCLUDED_DIRS.includes(path)) return false;
       if (path.startsWith(".")) return false;
+      return true;
+    }
+
+    // Check if README exists by making a HEAD request
+    async function checkReadmeExists(folderName) {
+      const readmeUrl = `https://raw.githubusercontent.com/DiegoFleitas/bookmarklet-collection/main/${folderName}/README.md`;
+      try {
+        const response = await fetch(readmeUrl, { method: 'HEAD' });
+        return response.ok;
+      } catch {
+        return false;
+      }
+    }
+
+    // Basic validation to check if the response looks like JavaScript (not an error page)
+    function looksLikeJavaScript(code) {
+      // Check for empty responses
+      if (!code || code.trim().length === 0) return false;
+      // Check if it starts with common HTML error patterns
+      if (code.trim().startsWith('<!DOCTYPE') || code.trim().startsWith('<html')) return false;
+      // Try to detect if it's an error page
+      if (code.includes('<title>404') || code.includes('Not Found</title>')) return false;
       return true;
     }
 
@@ -39,7 +71,19 @@
       try {
         const cacheBuster = new Date().getTime();
         const response = await fetch(`${url}?${cacheBuster}`);
+        
+        // Check HTTP status before processing
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
         const code = await response.text();
+        
+        // Validate the fetched code
+        if (!looksLikeJavaScript(code)) {
+          throw new Error('Invalid or missing JavaScript code');
+        }
+        
         const listItem = document.createElement("li");
         const link = document.createElement("a");
         link.href = `javascript:${encodeURIComponent(code)}`;
@@ -49,20 +93,28 @@
         }; // disable clicking on the link
         listItem.appendChild(link);
 
-        // Create a link to the README
-        const readmeLink = document.createElement("a");
-        readmeLink.href = readmeUrl;
-        readmeLink.textContent = "README";
-        readmeLink.style.marginLeft = "10px";
-        readmeLink.style.fontSize = "0.8em";
-        readmeLink.style.color = "#888";
-        readmeLink.style.fontStyle = "italic";
-        readmeLink.style.border = "none";
-        listItem.appendChild(readmeLink);
+        // Check if README exists before creating link
+        const readmeExists = await checkReadmeExists(folderName);
+        if (readmeExists) {
+          const readmeLink = document.createElement("a");
+          readmeLink.href = readmeUrl;
+          readmeLink.textContent = "README";
+          readmeLink.style.marginLeft = "10px";
+          readmeLink.style.fontSize = "0.8em";
+          readmeLink.style.color = "#888";
+          readmeLink.style.fontStyle = "italic";
+          readmeLink.style.border = "none";
+          listItem.appendChild(readmeLink);
+        }
 
         document.getElementById("bookmarklet-list").appendChild(listItem);
       } catch (error) {
-        console.error("Error loading bookmarklet:", error);
+        console.error(`Error loading bookmarklet "${name}":`, error);
+        // Show a user-friendly error message
+        const listItem = document.createElement("li");
+        listItem.style.color = "#d32f2f";
+        listItem.textContent = `⚠️ ${name} (failed to load: ${error.message})`;
+        document.getElementById("bookmarklet-list").appendChild(listItem);
       }
     }
 
@@ -72,13 +124,30 @@
         "https://api.github.com/repos/DiegoFleitas/bookmarklet-collection/git/trees/main?recursive=1";
       try {
         const response = await fetch(repoContentUrl);
+        
+        // Check HTTP status before parsing
+        if (!response.ok) {
+          if (response.status === 403) {
+            throw new Error('GitHub API rate limit exceeded. Please wait a few minutes and refresh the page.');
+          } else {
+            throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+          }
+        }
+        
         const data = await response.json();
         const directories = data.tree.filter(isBookmarkletDir);
+        
+        if (directories.length === 0) {
+          showError('No bookmarklets found in the repository.');
+          return;
+        }
+        
         for (const directory of directories) {
           loadBookmarklet(directory.path);
         }
       } catch (error) {
         console.error("Error loading directory list:", error);
+        showError(`Failed to load bookmarklets: ${error.message}`);
       }
     }
 
@@ -94,7 +163,7 @@
       padding: 20px;
     }
 
-    header {
+    h1 {
       font-size: 24px;
       margin-bottom: 20px;
     }
