@@ -5,232 +5,122 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bookmarklet Collection</title>
-</head>
-
-<body>
-  <h1>Diego's Bookmarklet Collection</h1>
-  <p>
-    Drag the links below to your bookmarks bar, once added you simply need to
-    click them to run the code.
-  </p>
-  <div id="error-message" style="display: none; color: #d32f2f; background-color: #ffebee; padding: 15px; border-radius: 5px; margin-bottom: 20px;"></div>
-  <ul id="bookmarklet-list">
-    <!-- Bookmarklets will be added here by JavaScript -->
-  </ul>
-
-  <script>
-    // Directories to exclude from bookmarklet discovery (site/infra, not bookmarklets).
-    // CI (.github/workflows/pages-check.yml) reads this list; keep as single source of truth.
-    const EXCLUDED_DIRS = ["docs", ".github", "scripts"];
-
-    function showError(message) {
-      const errorDiv = document.getElementById("error-message");
-      errorDiv.textContent = message;
-      errorDiv.style.display = "block";
-    }
-
-    function isBookmarkletDir(item) {
-      if (item.type !== "tree") return false;
-      const path = item.path;
-      if (path.indexOf("/") !== -1) return false; // top-level only
-      if (EXCLUDED_DIRS.includes(path)) return false;
-      if (path.startsWith(".")) return false;
-      return true;
-    }
-
-    // Check if README exists by making a HEAD request
-    async function checkReadmeExists(folderName) {
-      const readmeUrl = `https://raw.githubusercontent.com/DiegoFleitas/bookmarklet-collection/main/${folderName}/README.md`;
-      try {
-        const response = await fetch(readmeUrl, { method: 'HEAD' });
-        return response.ok;
-      } catch {
-        return false;
-      }
-    }
-
-    // Basic validation to check if the response looks like JavaScript (not an error page)
-    function looksLikeJavaScript(code) {
-      // Check for empty responses
-      if (!code || code.trim().length === 0) return false;
-      // Check if it starts with common HTML error patterns
-      if (code.trim().startsWith('<!DOCTYPE') || code.trim().startsWith('<html')) return false;
-      // Try to detect if it's an error page
-      if (code.includes('<title>404') || code.includes('Not Found</title>')) return false;
-      return true;
-    }
-
-    // Compute SHA-384 of UTF-8 string, return "sha384-<base64>"
-    async function sha384Base64(text) {
-      const data = new TextEncoder().encode(text);
-      const hash = await crypto.subtle.digest("SHA-384", data);
-      const base64 = btoa(String.fromCharCode(...new Uint8Array(hash)));
-      return "sha384-" + base64;
-    }
-
-    // Function to fetch the bookmarklet code and create a draggable link (only if integrity matches)
-    async function loadBookmarklet(folderName, integrityManifest) {
-      const url = `https://cdn.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main/${folderName}/index.js`;
-      const readmeUrl = `https://github.com/DiegoFleitas/bookmarklet-collection/blob/main/${folderName}/README.md`;
-      const name = folderName.replace(/-/g, " "); // Convert hyphens to spaces for a readable name
-      try {
-        const cacheBuster = new Date().getTime();
-        const response = await fetch(`${url}?${cacheBuster}`);
-        
-        // Check HTTP status before processing
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const code = await response.text();
-        
-        // Validate the fetched code
-        if (!looksLikeJavaScript(code)) {
-          throw new Error('Invalid or missing JavaScript code');
-        }
-
-        const expectedHash = integrityManifest[folderName];
-        if (!expectedHash) {
-          const listItem = document.createElement("li");
-          listItem.style.color = "#d32f2f";
-          listItem.textContent = name + " — integrity manifest missing; not loaded.";
-          document.getElementById("bookmarklet-list").appendChild(listItem);
-          return;
-        }
-        const actualHash = await sha384Base64(code);
-        if (actualHash !== expectedHash) {
-          const listItem = document.createElement("li");
-          listItem.style.color = "#d32f2f";
-          listItem.textContent = name + " — integrity check failed (code may have changed).";
-          document.getElementById("bookmarklet-list").appendChild(listItem);
-          return;
-        }
-        
-        const listItem = document.createElement("li");
-        const link = document.createElement("a");
-        link.href = `javascript:${encodeURIComponent(code)}`;
-        link.textContent = name;
-        link.onclick = function () {
-          return false;
-        }; // disable clicking on the link
-        listItem.appendChild(link);
-
-        // Check if README exists before creating link
-        const readmeExists = await checkReadmeExists(folderName);
-        if (readmeExists) {
-          const readmeLink = document.createElement("a");
-          readmeLink.href = readmeUrl;
-          readmeLink.textContent = "README";
-          readmeLink.style.marginLeft = "10px";
-          readmeLink.style.fontSize = "0.8em";
-          readmeLink.style.color = "#888";
-          readmeLink.style.fontStyle = "italic";
-          readmeLink.style.border = "none";
-          listItem.appendChild(readmeLink);
-        }
-
-        document.getElementById("bookmarklet-list").appendChild(listItem);
-      } catch (error) {
-        console.error(`Error loading bookmarklet "${name}":`, error);
-        // Show a user-friendly error message
-        const listItem = document.createElement("li");
-        listItem.style.color = "#d32f2f";
-        listItem.textContent = `⚠️ ${name} (failed to load: ${error.message})`;
-        document.getElementById("bookmarklet-list").appendChild(listItem);
-      }
-    }
-
-    // Function to fetch the list of directories in the repository and load the bookmarklets
-    async function loadAllBookmarklets() {
-      const manifestUrl = "https://cdn.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main/docs/bookmarklet-integrity.json";
-      const repoContentUrl =
-        "https://api.github.com/repos/DiegoFleitas/bookmarklet-collection/git/trees/main?recursive=1";
-      try {
-        const manifestRes = await fetch(manifestUrl);
-        if (!manifestRes.ok) {
-          showError("Integrity manifest unavailable. Bookmarklets cannot be loaded.");
-          return;
-        }
-        let integrityManifest;
-        try {
-          integrityManifest = await manifestRes.json();
-        } catch (e) {
-          showError("Integrity manifest invalid. Bookmarklets cannot be loaded.");
-          return;
-        }
-
-        const response = await fetch(repoContentUrl);
-        
-        // Check HTTP status before parsing
-        if (!response.ok) {
-          if (response.status === 403) {
-            throw new Error('GitHub API rate limit exceeded. Please wait a few minutes and refresh the page.');
-          } else {
-            throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
-          }
-        }
-        
-        const data = await response.json();
-        const directories = data.tree.filter(isBookmarkletDir);
-        
-        if (directories.length === 0) {
-          showError('No bookmarklets found in the repository.');
-          return;
-        }
-        
-        for (const directory of directories) {
-          loadBookmarklet(directory.path, integrityManifest);
-        }
-      } catch (error) {
-        console.error("Error loading directory list:", error);
-        showError(`Failed to load bookmarklets: ${error.message}`);
-      }
-    }
-
-    // Load all the bookmarklets
-    loadAllBookmarklets();
-  </script>
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       font-size: 18px;
-      background-color: #ffffff;
-      color: #333333;
+      background-color: #fff;
+      color: #333;
       padding: 20px;
     }
-
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    #bookmarklet-list {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    #bookmarklet-list li {
-      margin-bottom: 10px;
-    }
-
-    #bookmarklet-list a {
-      color: #007bff;
-      border: 1px solid #007bff;
-      padding: 5px;
-      text-decoration: none;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-
-    #bookmarklet-list a:hover {
-      background-color: #007bff;
-      color: #ffffff;
-    }
-
-    p {
-      margin-bottom: 20px;
-    }
+    h1 { font-size: 24px; margin-bottom: 20px; }
+    p { margin-bottom: 20px; }
+    #error-message { display: none; color: #c00; background: #fee; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+    #bookmarklet-list { list-style: none; padding: 0; }
+    #bookmarklet-list li { margin-bottom: 10px; }
+    #bookmarklet-list a { color: #07c; border: 1px solid #07c; padding: 5px 8px; text-decoration: none; border-radius: 5px; }
+    #bookmarklet-list a:hover { background: #07c; color: #fff; }
+    #bookmarklet-list .readme { margin-left: 10px; font-size: 0.85em; color: #888; font-style: italic; }
+    #bookmarklet-list .error-item { color: #c00; }
   </style>
+</head>
+
+<body>
+  <h1>Diego's Bookmarklet Collection</h1>
+  <p>Drag the links below to your bookmarks bar. Click them on any page to run the code.</p>
+  <div id="error-message"></div>
+  <ul id="bookmarklet-list"></ul>
+
+  <script>
+    const CDN = "https://cdn.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main";
+    const listEl = document.getElementById("bookmarklet-list");
+    const errorEl = document.getElementById("error-message");
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.style.display = "block";
+    }
+
+    function isJs(code) {
+      if (!code || !code.trim()) return false;
+      const t = code.trim();
+      if (t.startsWith("<!") || t.startsWith("<html") || code.includes("<title>404")) return false;
+      return true;
+    }
+
+    async function sha384(text) {
+      const data = new TextEncoder().encode(text);
+      const hash = await crypto.subtle.digest("SHA-384", data);
+      return "sha384-" + btoa(String.fromCharCode(...new Uint8Array(hash)));
+    }
+
+    async function loadOne(name, expectedHash) {
+      const url = `${CDN}/${name}/index.js`;
+      const displayName = name.replace(/-/g, " ");
+      const readmeUrl = `https://github.com/DiegoFleitas/bookmarklet-collection/blob/main/${name}/README.md`;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(res.status + " " + res.statusText);
+        const code = await res.text();
+        if (!isJs(code)) throw new Error("Invalid response");
+        const actualHash = await sha384(code);
+        if (actualHash !== expectedHash) {
+          listEl.appendChild(Object.assign(document.createElement("li"), {
+            className: "error-item",
+            textContent: `${displayName} — integrity check failed — the code may have been modified or the CDN cache is stale`
+          }));
+          return;
+        }
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = "javascript:" + encodeURIComponent(code);
+        a.textContent = displayName;
+        a.onclick = () => false;
+        li.appendChild(a);
+        // Optionally add README link if the README.md file exists.
+        try {
+          const readmeResponse = await fetch(readmeUrl, { method: "HEAD" });
+          if (readmeResponse.ok) {
+            const readme = document.createElement("a");
+            readme.href = readmeUrl;
+            readme.className = "readme";
+            readme.textContent = "README";
+            readme.target = "_blank";
+            li.appendChild(readme);
+          }
+        } catch (e) {
+          // Ignore README errors; README files are optional.
+        }
+        listEl.appendChild(li);
+      } catch (err) {
+        listEl.appendChild(Object.assign(document.createElement("li"), {
+          className: "error-item",
+          textContent: `⚠ ${displayName} — ${err.message}`
+        }));
+      }
+    }
+
+    (async function () {
+      try {
+        // Manifest is expected to live alongside this HTML file.
+        // If the file is opened via file:// or moved to a different directory,
+        // this relative path may need to be updated.
+        const res = await fetch("./bookmarklet-integrity.json");
+        if (!res.ok) throw new Error(`Could not load bookmarklet list (HTTP ${res.status})`);
+        const manifest = await res.json();
+        const names = Object.keys(manifest).sort();
+        if (!names.length) throw new Error("No bookmarklets in list");
+        const loadPromises = names.map(name => loadOne(name, manifest[name]));
+        await Promise.allSettled(loadPromises);
+      } catch (err) {
+        if (err instanceof SyntaxError) {
+          showError("Could not parse bookmarklet list (invalid JSON)");
+        } else {
+          showError(err.message);
+        }
+      }
+    })();
+  </script>
 </body>
 
 </html>
