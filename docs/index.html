@@ -142,7 +142,7 @@
 
     // Function to fetch the list of directories in the repository and load the bookmarklets
     async function loadAllBookmarklets() {
-      const manifestUrl = "bookmarklet-integrity.json";
+      const manifestUrl = "https://cdn.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main/docs/bookmarklet-integrity.json";
       const repoContentUrl =
         "https://api.github.com/repos/DiegoFleitas/bookmarklet-collection/git/trees/main?recursive=1";
       try {
