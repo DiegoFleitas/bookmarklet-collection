@@ -51,6 +51,16 @@ jobs:
             fi
           done
 
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify bookmarklet integrity manifest
+        run: |
+          test -f docs/bookmarklet-integrity.json || { echo "Missing docs/bookmarklet-integrity.json"; exit 1; }
+          node scripts/verify-integrity.js
+
   link-check:
     runs-on: ubuntu-latest
     steps:
