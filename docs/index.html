@@ -52,9 +52,9 @@
       }
     }
 
-    // Basic validation to check if code looks like valid JavaScript
-    function isValidJavaScript(code) {
-      // Check for obviously malicious patterns
+    // Basic validation to check if the response looks like JavaScript (not an error page)
+    function looksLikeJavaScript(code) {
+      // Check for empty responses
       if (!code || code.trim().length === 0) return false;
       // Check if it starts with common HTML error patterns
       if (code.trim().startsWith('<!DOCTYPE') || code.trim().startsWith('<html')) return false;
@@ -80,7 +80,7 @@
         const code = await response.text();
         
         // Validate the fetched code
-        if (!isValidJavaScript(code)) {
+        if (!looksLikeJavaScript(code)) {
           throw new Error('Invalid or missing JavaScript code');
         }
         
