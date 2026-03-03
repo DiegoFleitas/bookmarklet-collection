@@ -1,3 +1,34 @@
-This JavaScript bookmarklet is designed to collect and display the Discord user IDs, usernames, avatars, discriminators, connected accounts, and mutual guilds of members of a server when used on the web client. It is important to note that you must enable Developer Mode on the web client for this script to work. Additionally, the Authorization header must be set with a valid value at line 130, which you can copy from any request made to the discord.com/api endpoint by the client itself.
+# Discord swiper
 
-The script first observes the members list and scrolls through it to find all members. It then processes the information and displays it in a modal window. To run the script, save it as a bookmarklet and click it while you are on the Discord web client, in a server's member list. Please be aware that frequent use of this script may violate Discord's terms of service, and it is recommended to use it cautiously and responsibly.
+## Overview
+
+This bookmarklet collects and displays rich information about members of a Discord server when used in the Discord web client. It can show:
+
+- User IDs
+- Usernames and discriminators
+- Avatars
+- Connected accounts
+- Mutual guilds
+
+## Usage
+
+1. **Prepare your Discord client**
+   
+   > [!IMPORTANT]
+   > Enable **Developer Mode** in Discord (`User Settings → Advanced → Developer Mode`) and capture a valid `Authorization` header from a request to `https://discord.com/api` before running this bookmarklet.
+   >
+   > Set that token in the script at the referenced line before minifying / building the bookmarklet, otherwise profile requests will fail with `401 Unauthorized`.
+
+2. **Install the bookmarklet**
+   - Create a new bookmark in your browser.
+   - Paste the bookmarklet JavaScript as the bookmark's URL.
+
+3. **Run it**
+   - Open the Discord web client and navigate to a server's members list.
+   - Click the bookmarklet.
+   - The script will scroll through the members list, gather data, and display it in a modal.
+
+## Warnings
+
+> [!WARNING]
+> This script makes authenticated calls to Discord's API in ways that may violate Discord's Terms of Service. Use it **at your own risk**, sparingly, and only on accounts and servers you control or have explicit permission to analyze.

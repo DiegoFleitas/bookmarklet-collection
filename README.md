@@ -1,63 +1,98 @@
-# Diego's Bookmarklet collection
+# Diego's bookmarklet collection
 
-A collection of old bookmarklets I wrote and still use once in a full moon. Most of them are not actively maintained and may not work as expected today.
-Better placed on a repo than among the (too many) bookmarks on my browser (firefox).
+A small collection of bookmarklets I wrote and still use occasionally. Most of them are not actively maintained and may no longer work on every site, but keeping them here is more practical than burying them in a long browser bookmarks list.
 
-## Live Bookmarklet Page
+## Live bookmarklet page
 
-Visit [the live page](https://diegofleitas.github.io/bookmarklet-collection/) to see all bookmarklets and drag them to your bookmarks bar.
+Visit **[the live page](https://diegofleitas.github.io/bookmarklet-collection/)** to:
 
-## Repo layout
+- **Browse all bookmarklets**
+- **Read per-bookmarklet READMEs**
+- **Drag bookmarklet links to your bookmarks bar**
 
-- **Root:** One directory per bookmarklet. Each has `index.js` (the bookmarklet code) and optionally `README.md`.
-- **docs/:** The GitHub Pages site (`index.html`) and the integrity manifest (`bookmarklet-integrity.json`). The site is served from the `main` branch with source folder `/docs`.
-- **scripts/:** `update-integrity.js` regenerates the integrity manifest; `verify-integrity.js` is used by CI.
-- **.github/workflows/:** CI checks that `docs/` and the integrity manifest are present and in sync with `index.js` files.
+## Repository layout
+
+- **Root:** One directory per bookmarklet. Each contains an `index.js` (the bookmarklet code, single line) and optionally a `README.md` with usage notes.
+- **docs/**: GitHub Pages site (`index.html`) plus the integrity manifest (`bookmarklet-integrity.json`). Pages are served from the `main` branch using `/docs` as the source folder.
+- **scripts/**: Node scripts for maintaining the integrity manifest:
+  - `update-integrity.js` regenerates `docs/bookmarklet-integrity.json`
+  - `verify-integrity.js` checks that the manifest matches the current `index.js` files
+- **.github/workflows/**: CI that ensures `docs/` and the integrity manifest stay in sync with the bookmarklets.
 
 ## How the page works
 
-The live page loads `bookmarklet-integrity.json` (same origin). That manifest lists bookmarklet folder names and their SHA-384 hashes. For each entry it fetches `index.js` from [jsDelivr](https://www.jsdelivr.com/github), verifies the hash, and builds a draggable link. Each bookmarklet also gets a README link pointing to its GitHub README.md file (which may or may not exist). No GitHub API; one manifest fetch plus one script fetch per bookmarklet.
+The live page loads `bookmarklet-integrity.json` from the same origin. That manifest lists each bookmarklet directory and the SHA‑384 hash of its `index.js`. For every entry the page:
 
-## Integrity
+1. Fetches the corresponding `index.js` from [jsDelivr](https://www.jsdelivr.com/github).
+2. Verifies the SHA‑384 hash against the manifest.
+3. Renders a draggable link for the bookmarklet plus an optional link to its README on GitHub.
 
-The page only embeds bookmarklet code whose SHA-384 hash matches the committed manifest (`docs/bookmarklet-integrity.json`). If the CDN or the repo were compromised, changed code would not match and the link would not be created. After editing any bookmarklet’s `index.js`, you must regenerate the manifest and commit it (see Adding a bookmarklet).
+There is no GitHub API usage; the page performs a single manifest fetch and then one script fetch per bookmarklet.
+
+## Integrity model
+
+Only bookmarklet code whose SHA‑384 hash matches the committed manifest (`docs/bookmarklet-integrity.json`) is displayed. If either the CDN or the repository were compromised and served modified code, the hash would not match and the link would be omitted.
+
+> [!IMPORTANT]
+> After editing any bookmarklet’s `index.js`, you **must** regenerate and commit the manifest (see **Adding a bookmarklet**). If the manifest is stale, CI will fail and the live page may hide or flag the affected bookmarklets.
+
+## Quick start (contributors)
+
+1. **Install dependencies**
+   - `npm install`
+2. **Update the integrity manifest after bookmarklet changes**
+   - `npm run update-integrity`
+3. **Optionally verify and lint**
+   - `npm run verify-integrity`
+   - `npm run lint`
 
 ## Adding a bookmarklet
 
 1. Create a new **root-level** directory, e.g. `my-bookmarklet/`.
-2. Add `index.js` with the bookmarklet code (single line, no comments; use [Esprima](https://esprima.org/demo/validate.html) to validate).
-3. Optionally add `README.md` describing what it does.
+2. Add `index.js` with the bookmarklet code as a single line (no comments). You can use the [Esprima validator](https://esprima.org/demo/validate.html) to check syntax.
+3. Optionally add a `README.md` describing what the bookmarklet does, how to use it, and any caveats.
 4. Run `npm run update-integrity` (or `node scripts/update-integrity.js`) and commit the updated `docs/bookmarklet-integrity.json`.
-5. Push to `main`. The live page will pick it up automatically. CI will fail if the manifest is out of sync with any `index.js`.
+5. Push to `main`. CI will fail if the manifest is out of sync with any `index.js`. Once CI passes, the live page will pick up the new bookmarklet automatically.
 
 ## Project scope
 
-This is intentionally a small, lightweight bookmarklet collection and static GitHub Pages site. It uses a minimal Node toolchain (integrity scripts and a simple CI check) rather than a full test suite or heavy frontend framework.
+This is intentionally a small, lightweight bookmarklet collection plus a static GitHub Pages site. It uses a minimal Node toolchain (for integrity scripts and a simple CI check) rather than a full test suite or heavy frontend framework.
 
 ## Development tooling
 
 - **Update integrity manifest:** `npm run update-integrity`
 - **Verify integrity manifest matches bookmarklets:** `npm run verify-integrity`
-- **Lint (optional):** `npm run lint` (uses ESLint with a minimal config, ignoring legacy bookmarklet files)
-- **Format (optional):** `npm run format` (uses Prettier with a basic configuration)
+- **Lint (optional):** `npm run lint` (ESLint, minimal config; legacy bookmarklet files are mostly ignored)
+- **Format (optional):** `npm run format` (Prettier with a basic configuration)
 
 ## Limitations
 
-- **CSP and browser rules:** Many sites block `javascript:` bookmarks or restrict cross-origin scripts. Bookmarklets only run where the browser and site allow.
-- **jsDelivr cache:** After updating a bookmarklet, the CDN may serve an old copy. Use [Purge jsDelivr CDN cache](https://www.jsdelivr.com/tools/purge) if needed (e.g. `https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/my-bookmarklet/index.js`).
+- **CSP and browser rules:** Many sites block `javascript:` bookmarks or restrict cross‑origin scripts. Bookmarklets only run where both the browser and target site allow them.
+- **jsDelivr cache:** After updating a bookmarklet, the CDN may serve an old copy for a while. Use the [jsDelivr cache purge tool](https://www.jsdelivr.com/tools/purge) if necessary (for example `https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/my-bookmarklet/index.js`).
 
 ## GitHub Pages setup
 
-In the repo **Settings → Pages**, set source to **Deploy from a branch**; branch **main**, folder **/docs**. The public URL stays `https://diegofleitas.github.io/bookmarklet-collection/`.
+In **Settings → Pages**, configure:
 
-## Deprecating the gh-pages branch (after switch)
+- **Source:** Deploy from a branch  
+- **Branch:** `main`  
+- **Folder:** `/docs`
 
-1. **Freeze:** Create a tag from current `gh-pages` for rollback, e.g. `git tag backup/gh-pages-$(date +%Y%m%d) gh-pages && git push origin backup/gh-pages-$(date +%Y%m%d)`.
+The public URL is `https://diegofleitas.github.io/bookmarklet-collection/`.
+
+## Deprecating the `gh-pages` branch (after switching to `/docs`)
+
+1. **Freeze:** Tag the current `gh-pages` branch for rollback, for example:
+   - `git tag backup/gh-pages-$(date +%Y%m%d) gh-pages && git push origin backup/gh-pages-$(date +%Y%m%d)`
 2. **Validate:** Use the live site from `main`/`docs` for a short period; confirm listing, payloads, and a few bookmarklets work.
-3. **Delete:** Remove the branch locally and on origin: `git push origin --delete gh-pages` (and delete local `gh-pages` if desired). The site is now served only from `main`/`docs`.
+3. **Delete:** Remove the branch locally and on origin:
+   - `git push origin --delete gh-pages`
+   - Optionally delete the local `gh-pages` branch.
+
+After that, the site is served only from `main`/`docs`.
 
 ## Resources
 
-- [JS Builder](http://subsimple.com/bookmarklets/jsbuilder.htm): A tool for creating and testing bookmarklets.
-- [Esprima Validator](https://esprima.org/demo/validate.html): A JavaScript syntax validator to ensure your code is free of syntax errors. (This won't catch comments, remember you can't have those in a single-line bookmarklet :wink:)
-- [Purge jsDelivr CDN cache](https://www.jsdelivr.com/tools/purge) ex: https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/justwatch-watchlist-exporter/index.js?1712802445207
+- [JS Builder](http://subsimple.com/bookmarklets/jsbuilder.htm): A simple tool for creating and testing bookmarklets.
+- [Esprima validator](https://esprima.org/demo/validate.html): JavaScript syntax validator to ensure your code parses correctly as a single line.
+- [Purge jsDelivr CDN cache](https://www.jsdelivr.com/tools/purge): For forcing cache refreshes of bookmarklet URLs such as `https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/justwatch-watchlist-exporter/index.js`.
