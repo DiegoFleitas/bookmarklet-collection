@@ -1,7 +1,23 @@
-This JavaScript bookmarklet creates an object called Spy that observes changes in the DOM of a webpage. To use it for inspecting a specific DOM element, follow these steps:
+## Overview
 
-    Save the script as a bookmarklet and click it while on a webpage.
-    Open your browser's developer tools and select the desired element in the "Elements" tab.
-    In the "Console" tab, enter Spy.observe($0). The $0 represents the currently selected element.
+This bookmarklet injects a small helper object called `Spy` that lets you observe DOM changes for a specific element on the current page.
 
-Now, whenever the selected element is modified, the JavaScript execution will pause due to the debugger statement in the Spy["break"] function. The stack trace will be logged using console.trace(), allowing you to inspect the state of the script and the webpage at that moment.
+When a watched element is modified, JavaScript execution pauses (via `debugger`) and a stack trace is logged so you can see what code caused the change.
+
+## Usage
+
+1. Save the script from `index.js` as a bookmarklet and click it while on any webpage.
+2. Open your browser's developer tools and select the element of interest in the **Elements** tab.
+3. Switch to the **Console** tab and run:
+   - `Spy.observe($0)`
+4. Interact with the page until the watched element changes.
+
+When the element is modified:
+
+- Execution will pause at `Spy["break"]` due to a `debugger` statement.
+- A stack trace will be printed via `console.trace()`, allowing you to inspect the state of the page and calling code.
+
+## Notes
+
+- This is primarily a **debugging tool**; you should only use it on pages you are allowed to inspect and debug.
+- You can stop observing elements by reloading the page or removing the `Spy` hooks in the console.
