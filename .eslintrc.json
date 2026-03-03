@@ -1,0 +1,36 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "ignorePatterns": [
+    "docs/bookmarklet-integrity.json",
+    "**/index.js"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "scripts/**/*.js"
+      ],
+      "env": {
+        "node": true,
+        "browser": false
+      }
+    },
+    {
+      "files": [
+        "docs/**/*.js",
+        "docs/**/*.html"
+      ],
+      "env": {
+        "browser": true,
+        "node": false
+      }
+    }
+  ]
+}

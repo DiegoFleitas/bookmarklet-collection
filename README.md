@@ -27,8 +27,19 @@ The page only embeds bookmarklet code whose SHA-384 hash matches the committed m
 1. Create a new **root-level** directory, e.g. `my-bookmarklet/`.
 2. Add `index.js` with the bookmarklet code (single line, no comments; use [Esprima](https://esprima.org/demo/validate.html) to validate).
 3. Optionally add `README.md` describing what it does.
-4. Run `node scripts/update-integrity.js` and commit the updated `docs/bookmarklet-integrity.json`.
+4. Run `npm run update-integrity` (or `node scripts/update-integrity.js`) and commit the updated `docs/bookmarklet-integrity.json`.
 5. Push to `main`. The live page will pick it up automatically. CI will fail if the manifest is out of sync with any `index.js`.
+
+## Project scope
+
+This is intentionally a small, lightweight bookmarklet collection and static GitHub Pages site. It uses a minimal Node toolchain (integrity scripts and a simple CI check) rather than a full test suite or heavy frontend framework.
+
+## Development tooling
+
+- **Update integrity manifest:** `npm run update-integrity`
+- **Verify integrity manifest matches bookmarklets:** `npm run verify-integrity`
+- **Lint (optional):** `npm run lint` (uses ESLint with a minimal config, ignoring legacy bookmarklet files)
+- **Format (optional):** `npm run format` (uses Prettier with a basic configuration)
 
 ## Limitations
 
