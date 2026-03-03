@@ -1,0 +1,15 @@
+{
+  "name": "bookmarklet-collection",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Diego's personal bookmarklet collection and accompanying GitHub Pages site.",
+  "scripts": {
+    "update-integrity": "node scripts/update-integrity.js",
+    "verify-integrity": "node scripts/verify-integrity.js",
+    "lint": "npx eslint .",
+    "format": "npx prettier . --write"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
