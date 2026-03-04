@@ -81,7 +81,13 @@
         a.className = "bookmarklet-link";
         a.href = "javascript:" + encodeURIComponent(code);
         a.textContent = displayName;
+        a.setAttribute("draggable", "true");
         a.onclick = () => false;
+        // Drag event: set bookmarklet code as text/plain for bookmarks bar
+        a.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", a.href);
+          e.dataTransfer.effectAllowed = "copyLink";
+        });
         li.appendChild(a);
         // Add README link for all bookmarklets (README files are optional).
         const readme = document.createElement("a");
