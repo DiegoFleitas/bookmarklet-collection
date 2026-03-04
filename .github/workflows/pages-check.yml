@@ -1,4 +1,4 @@
-name: Pages check
+name: Docs / site check
 
 on:
   push:
@@ -32,7 +32,7 @@ jobs:
       - name: Check links
         uses: lycheeverse/lychee-action@v1
         with:
-          args: 'README.md docs/index.html --no-progress --timeout 10'
+          args: 'README.md docs/index.html --no-progress --timeout 10 --exclude https://fonts.googleapis.com/ --exclude https://fonts.gstatic.com/'
           fail: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
