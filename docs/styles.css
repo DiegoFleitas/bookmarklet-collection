@@ -1,28 +1,33 @@
+
 :root {
-  --color-page-bg: #f3f4f6;
-  --color-surface: #ffffff;
-  --color-surface-subtle: #f9fafb;
-  --color-border-subtle: #e5e7eb;
-  --color-primary: #2563eb;
-  --color-primary-soft: rgba(37, 99, 235, 0.08);
-  --color-danger: #b91c1c;
-  --color-danger-soft: #fef2f2;
-  --color-text: #0f172a;
-  --color-text-muted: #6b7280;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --color-page-bg: #181c2f;
+  --color-surface: #23264a;
+  --color-surface-subtle: #23264aee;
+  --color-border-subtle: #2f80ff;
+  --color-primary: #ff2fd6;
+  --color-primary-soft: rgba(255, 47, 214, 0.10);
+  --color-accent: #00ffe7;
+  --color-accent2: #2f80ff;
+  --color-accent3: #ffe600;
+  --color-danger: #ff2f5a;
+  --color-danger-soft: #2f1a2a;
+  --color-text: #f6f6fa;
+  --color-text-muted: #8a8db3;
+  --radius-md: 16px;
+  --radius-lg: 24px;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --shadow-soft: 0 10px 25px rgba(15, 23, 42, 0.08);
-  --font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --font-size-sm: 0.875rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.5rem;
-  --line-height-tight: 1.2;
+  --space-4: 1.2rem;
+  --space-5: 1.7rem;
+  --space-6: 2.2rem;
+  --shadow-soft: 0 10px 40px #00ffe733, 0 2px 8px #000a;
+  --font-family-display: 'Orbitron', sans-serif;
+  --font-family-mono: 'IBM Plex Mono', monospace;
+  --font-size-sm: 0.95rem;
+  --font-size-md: 1.1rem;
+  --font-size-lg: 1.5rem;
+  --font-size-xl: 2.5rem;
+  --line-height-tight: 1.1;
   --line-height-relaxed: 1.6;
 }
 
@@ -30,46 +35,122 @@
   box-sizing: border-box;
 }
 
+
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: var(--font-family-sans);
+  font-family: var(--font-family-mono);
   font-size: var(--font-size-md);
   line-height: var(--line-height-relaxed);
-  background-color: var(--color-page-bg);
+  background: linear-gradient(120deg, #181c2f 0%, #23264a 100%);
   color: var(--color-text);
   display: flex;
   align-items: flex-start;
   justify-content: center;
   padding: var(--space-6);
+  overflow-x: hidden;
+}
+
+.retro-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+/* Add a semi-transparent overlay for better text contrast */
+.retro-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, #181c2fcc 80%, #23264acc 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: repeating-linear-gradient(0deg, transparent, transparent 38px, #2f80ff22 40px),
+              repeating-linear-gradient(90deg, transparent, transparent 38px, #2f80ff22 40px);
+  background-size: 100% 100%;
+  pointer-events: none;
+  animation: grid-fade 6s ease-in-out infinite alternate;
+}
+
+@keyframes grid-fade {
+  0% { opacity: 0.5; }
+  100% { opacity: 0.9; }
 }
 
 .page-shell {
-  width: 100%;
-  max-width: 960px;
-  background-color: var(--color-surface);
+  position: relative;
+  z-index: 3;
+  width: 96vw;
+  max-width: 1400px;
+  min-width: 340px;
+  background: linear-gradient(120deg, #23264ae6 80%, #2f80ff33 100%);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft);
-  padding: clamp(1.5rem, 3vw, 2.5rem);
+  box-shadow: 0 0 0 4px #2f80ff33, var(--shadow-soft);
+  padding: clamp(2.2rem, 4vw, 3.2rem);
+  margin: 3vw auto;
+  overflow-x: auto;
 }
 
 .page-header {
   margin-bottom: var(--space-5);
-  border-bottom: 1px solid var(--color-border-subtle);
+  border-bottom: 2px solid var(--color-accent2);
   padding-bottom: var(--space-4);
+  text-align: left;
+  position: relative;
+}
+
+.neon-glow {
+  text-shadow:
+    0 0 8px var(--color-primary),
+    0 0 16px var(--color-accent),
+    0 0 32px var(--color-primary),
+    0 0 2px #fff,
+    0 2px 8px #000c;
+  filter: brightness(1.2);
+}
+
+.neon-accent {
+  color: var(--color-primary);
+  text-shadow:
+    0 0 8px var(--color-primary),
+    0 0 16px var(--color-primary),
+    0 0 32px var(--color-primary),
+    0 2px 8px #000c;
 }
 
 .page-title {
+  font-family: var(--font-family-display);
   font-size: var(--font-size-xl);
   line-height: var(--line-height-tight);
-  letter-spacing: -0.02em;
+  letter-spacing: 0.04em;
   margin: 0 0 var(--space-2);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fff;
+  text-shadow:
+    0 0 8px var(--color-primary),
+    0 0 16px var(--color-accent),
+    0 0 32px var(--color-primary),
+    0 2px 8px #000c;
 }
 
 .page-subtitle {
   margin: 0;
-  color: var(--color-text-muted);
+  color: #e0eaff;
   font-size: var(--font-size-md);
+  font-family: var(--font-family-mono);
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 8px #000c, 0 0 2px #fff2;
 }
 
 .page-main {
@@ -77,125 +158,176 @@ body {
   flex-direction: column;
   gap: var(--space-4);
   margin-top: var(--space-4);
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
+  transition: opacity 0.7s cubic-bezier(.7,0,.3,1), transform 0.7s cubic-bezier(.7,0,.3,1);
+}
+
+.animated-reveal.show {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.2s;
 }
 
 #error-message {
   display: none;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
-  background-color: var(--color-danger-soft);
+  background: linear-gradient(90deg, #2f1a2a 60%, #ff2f5a22 100%);
   color: var(--color-danger);
-  border: 1px solid rgba(185, 28, 28, 0.15);
+  border: 1.5px solid var(--color-danger);
   font-size: var(--font-size-sm);
+  box-shadow: 0 0 8px #ff2f5a55;
 }
 
 .bookmarklet-list {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2.2rem 2.5rem;
+  z-index: 2;
+  width: 100%;
+  max-width: 100%;
 }
 
 .bookmarklet-item {
-  padding: var(--space-4) var(--space-5);
-  background-color: var(--color-surface-subtle);
+  padding: 1.2rem 2.2rem 1.2rem 1.2rem;
+  background: linear-gradient(120deg, #23264a 80%, #2f80ff22 100%);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border-subtle);
-  box-shadow: var(--shadow-soft);
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-accent2), 0 2px 16px #00ffe733;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
+  justify-content: flex-start;
+  gap: 1.2rem;
+  position: relative;
+  overflow: visible;
+  min-width: 0;
+  transition: box-shadow 0.3s cubic-bezier(.7,0,.3,1), border-color 0.3s cubic-bezier(.7,0,.3,1);
 }
 
 .bookmarklet-item.error-item {
-  background-color: var(--color-danger-soft);
-  border-color: rgba(185, 28, 28, 0.25);
+  background: linear-gradient(90deg, #2f1a2a 60%, #ff2f5a22 100%);
+  border-color: var(--color-danger);
   color: var(--color-danger);
-  box-shadow: none;
+  box-shadow: 0 0 8px #ff2f5a55;
   font-size: var(--font-size-sm);
 }
+
 
 .bookmarklet-link {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.5rem 0.9rem;
+  justify-content: flex-start;
+  flex: 1 1 0%;
+  padding: 0.6rem 1.2rem;
   border-radius: 999px;
-  border: 1px solid transparent;
-  background-color: var(--color-primary-soft);
-  color: var(--color-primary);
-  font-weight: 600;
+  border: 2px solid var(--color-accent);
+  background: linear-gradient(90deg, var(--color-primary-soft) 60%, var(--color-accent2) 100%);
+  color: #fff;
+  font-family: var(--font-family-display);
+  font-weight: 700;
   font-size: var(--font-size-sm);
   text-decoration: none;
-  white-space: nowrap;
+  white-space: normal;
   cursor: grab;
+  box-shadow: 0 0 8px var(--color-accent), 0 0 2px #fff;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px #000c, 0 0 2px #fff2;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   transition:
-    background-color 150ms ease,
-    color 150ms ease,
-    box-shadow 150ms ease,
-    transform 150ms ease,
-    border-color 150ms ease;
+    background 200ms cubic-bezier(.7,0,.3,1),
+    color 200ms cubic-bezier(.7,0,.3,1),
+    box-shadow 200ms cubic-bezier(.7,0,.3,1),
+    transform 150ms cubic-bezier(.7,0,.3,1),
+    border-color 200ms cubic-bezier(.7,0,.3,1);
 }
+
 
 .bookmarklet-link:hover {
-  background-color: var(--color-primary);
+  background: linear-gradient(90deg, var(--color-primary) 60%, var(--color-accent2) 100%);
   color: #fff;
-  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
-  transform: translateY(-1px);
-  border-color: transparent;
+  box-shadow: 0 0 24px var(--color-primary), 0 0 8px var(--color-accent2);
+  transform: translateY(-2px) scale(1.04);
+  border-color: var(--color-primary);
+  text-shadow: 0 2px 12px #000e, 0 0 2px #fff2;
 }
+
 
 .bookmarklet-link:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 0 8px var(--color-primary);
 }
 
+
 .bookmarklet-link:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-accent3);
   outline-offset: 2px;
 }
+
 
 .bookmarklet-readme {
   margin-left: var(--space-3);
   font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+  color: #fff;
+  text-shadow: 0 2px 8px #000c, 0 0 2px #fff2;
   text-decoration: none;
   font-style: italic;
   white-space: nowrap;
-  transition: color 150ms ease, text-decoration-color 150ms ease;
+  font-family: var(--font-family-mono);
+  letter-spacing: 0.02em;
+  background: rgba(0,0,0,0.25);
+  border-radius: 6px;
+  padding: 0.1em 0.5em;
+  max-width: 120px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 150ms cubic-bezier(.7,0,.3,1), text-decoration-color 150ms cubic-bezier(.7,0,.3,1), background 150ms cubic-bezier(.7,0,.3,1);
 }
+
 
 .bookmarklet-readme:hover {
   color: var(--color-primary);
+  background: rgba(0,0,0,0.45);
   text-decoration: underline;
-  text-decoration-thickness: 1px;
+  text-decoration-thickness: 2px;
 }
+
 
 .bookmarklet-readme:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-accent3);
   outline-offset: 2px;
+  background: rgba(0,0,0,0.55);
 }
 
-@media (max-width: 640px) {
-  body {
-    padding: var(--space-4);
-  }
-
+@media (max-width: 900px) {
   .page-shell {
+    max-width: 99vw;
     padding: var(--space-4);
   }
-
+  .bookmarklet-list {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem 1.2rem;
+  }
   .bookmarklet-item {
     flex-direction: column;
     align-items: flex-start;
+    padding: 1.1rem 1.1rem 1.1rem 1.1rem;
   }
-
   .bookmarklet-link {
     width: 100%;
-    justify-content: center;
+    justify-content: flex-start;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 }
 

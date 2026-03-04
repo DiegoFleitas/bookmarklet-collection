@@ -5,6 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bookmarklet Collection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css" />
   <link rel="apple-touch-icon" sizes="180x180" href="./favicon_io/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="./favicon_io/favicon-32x32.png" />
@@ -14,18 +17,25 @@
 </head>
 
 <body>
-  <div class="page-shell">
-    <header class="page-header">
-      <h1 class="page-title">Diego's Bookmarklet Collection</h1>
-      <p class="page-subtitle">Drag any bookmarklet to your bookmarks bar, then click it on any page to run the code.</p>
-    </header>
-    <main class="page-main">
-      <div id="error-message" role="alert"></div>
-      <ul id="bookmarklet-list" class="bookmarklet-list"></ul>
-    </main>
+  <div class="retro-bg">
+    <div class="grid-overlay"></div>
+    <div class="page-shell">
+      <header class="page-header neon-glow">
+        <h1 class="page-title">Diego's <span class="neon-accent">Bookmarklet</span> Collection</h1>
+        <p class="page-subtitle">Drag any bookmarklet to your bookmarks bar, then click it on any page to run the code.</p>
+      </header>
+      <main class="page-main animated-reveal">
+        <div id="error-message" role="alert"></div>
+        <ul id="bookmarklet-list" class="bookmarklet-list"></ul>
+      </main>
+    </div>
   </div>
 
   <script>
+    // Animate page load with staggered reveals
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelector('.animated-reveal').classList.add('show');
+    });
     const CDN = "https://cdn.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main";
     const listEl = document.getElementById("bookmarklet-list");
     const errorEl = document.getElementById("error-message");
