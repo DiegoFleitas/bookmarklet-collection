@@ -8,9 +8,14 @@
     "verify-integrity": "node scripts/verify-integrity.js",
     "lint": "npx eslint .",
     "format": "npx prettier . --write",
-    "dev": "npx serve docs"
+    "dev": "npx serve docs",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "wrangler": "^4.71.0"
   }
 }
