@@ -2,6 +2,8 @@
 
 A small collection of bookmarklets I wrote and still use occasionally. Most of them are not actively maintained and may no longer work on every site, but keeping them here is more practical than burying them in a long browser bookmarks list.
 
+See [docs/frontend-design.md](docs/frontend-design.md) for the current frontend design direction and aesthetic details.
+
 ## Live bookmarklet page
 
 Visit **[the live page](https://diegofleitas.github.io/bookmarklet-collection/)** to:
@@ -13,7 +15,7 @@ Visit **[the live page](https://diegofleitas.github.io/bookmarklet-collection/)*
 ## Repository layout
 
 - **Root:** One directory per bookmarklet. Each contains an `index.js` (the bookmarklet code, single line) and optionally a `README.md` with usage notes.
-- **docs/**: GitHub Pages site (`index.html`) plus the integrity manifest (`bookmarklet-integrity.json`). Pages are served from the `main` branch using `/docs` as the source folder.
+- **docs/**: Static site (`index.html`) plus the integrity manifest (`bookmarklet-integrity.json`). The site is deployed from the `main` branch via GitHub Pages using the `docs/` folder as the published root.
 - **scripts/**: Node scripts for maintaining the integrity manifest:
   - `update-integrity.js` regenerates `docs/bookmarklet-integrity.json`
   - `verify-integrity.js` checks that the manifest matches the current `index.js` files
@@ -70,26 +72,10 @@ This is intentionally a small, lightweight bookmarklet collection plus a static 
 - **CSP and browser rules:** Many sites block `javascript:` bookmarks or restrict cross‑origin scripts. Bookmarklets only run where both the browser and target site allow them.
 - **jsDelivr cache:** After updating a bookmarklet, the CDN may serve an old copy for a while. Use the [jsDelivr cache purge tool](https://www.jsdelivr.com/tools/purge) if necessary (for example `https://cdn.jsdelivr.net/gh/diegofleitas/bookmarklet-collection@main/my-bookmarklet/index.js`).
 
-## GitHub Pages setup
+## Hosting
 
-In **Settings → Pages**, configure:
-
-- **Source:** Deploy from a branch  
-- **Branch:** `main`  
-- **Folder:** `/docs`
-
-The public URL is `https://diegofleitas.github.io/bookmarklet-collection/`.
-
-## Deprecating the `gh-pages` branch (after switching to `/docs`)
-
-1. **Freeze:** Tag the current `gh-pages` branch for rollback, for example:
-   - `git tag backup/gh-pages-$(date +%Y%m%d) gh-pages && git push origin backup/gh-pages-$(date +%Y%m%d)`
-2. **Validate:** Use the live site from `main`/`docs` for a short period; confirm listing, payloads, and a few bookmarklets work.
-3. **Delete:** Remove the branch locally and on origin:
-   - `git push origin --delete gh-pages`
-   - Optionally delete the local `gh-pages` branch.
-
-After that, the site is served only from `main`/`docs`.
+The static site in the `docs/` folder on `main` is published via **GitHub Pages** at [https://diegofleitas.github.io/bookmarklet-collection/](https://diegofleitas.github.io/bookmarklet-collection/).
+Note that the root GitHub Pages site at [https://diegofleitas.github.io](https://diegofleitas.github.io) is managed by a different repository; this project only owns the `/bookmarklet-collection/` subpath.
 
 ## Resources
 
