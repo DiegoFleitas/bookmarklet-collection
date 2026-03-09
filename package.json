@@ -7,7 +7,8 @@
     "update-integrity": "node scripts/update-integrity.js",
     "verify-integrity": "node scripts/verify-integrity.js",
     "lint": "npx eslint .",
-    "format": "npx prettier . --write"
+    "format": "npx prettier . --write",
+    "dev": "npx serve docs"
   },
   "engines": {
     "node": ">=18"
