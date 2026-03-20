@@ -2,11 +2,15 @@
 :root {
   --color-page-bg: #0f1419;
   --color-surface: #1a2332;
+  --color-surface-elevated: #1e2d3d;
   --color-surface-subtle: #1a2332ee;
+  --color-border: rgba(47, 128, 255, 0.35);
   --color-border-subtle: #2f80ff;
   --color-primary: #00ffe7;
   --color-primary-soft: rgba(0, 255, 231, 0.08);
   --color-accent: #00ffe7;
+  --color-accent-soft: #00ffe7;
+  --color-accent-muted: rgba(0, 255, 231, 0.6);
   --color-accent2: #2f80ff;
   --color-accent3: #ffe600;
   --color-danger: #ff2f5a;
@@ -21,6 +25,7 @@
   --space-5: 1.7rem;
   --space-6: 2.2rem;
   --shadow-soft: 0 10px 40px rgba(0, 255, 231, 0.12), 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 0 1px rgba(0, 255, 231, 0.3), 0 8px 26px rgba(0, 0, 0, 0.45);
   --font-family-display: 'Orbitron', sans-serif;
   --font-family-mono: 'IBM Plex Mono', monospace;
   --font-size-sm: 0.95rem;
@@ -34,6 +39,43 @@
 body {
   margin: 0;
   background: var(--color-page-bg);
+}
+
+.github-icon-link {
+  position: fixed;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(8px);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.github-icon-link:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-accent-muted);
+  color: var(--color-accent-soft);
+  box-shadow: var(--shadow-glow);
+}
+
+.github-icon-link svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }
 
 .retro-bg {
@@ -301,6 +343,20 @@ body {
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
+  }
+}
+
+@media (max-width: 640px) {
+  .github-icon-link {
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 28px;
+    height: 28px;
+  }
+
+  .github-icon-link svg {
+    width: 14px;
+    height: 14px;
   }
 }
 
