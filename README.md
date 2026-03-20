@@ -1,5 +1,7 @@
 # Diego's bookmarklet collection
 
+[![Docs / site check](https://github.com/diegofleitas/bookmarklet-collection/actions/workflows/pages-check.yml/badge.svg?branch=main)](https://github.com/diegofleitas/bookmarklet-collection/actions/workflows/pages-check.yml)
+
 A small collection of bookmarklets I wrote and still use occasionally. Most of them are not actively maintained and may no longer work on every site, but keeping them here is more practical than burying them in a long browser bookmarks list.
 
 See [docs/frontend-design.md](docs/frontend-design.md) for the current frontend design direction and aesthetic details.
