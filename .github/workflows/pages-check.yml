@@ -34,7 +34,7 @@ jobs:
         run: node scripts/verify-integrity.js
 
       - name: Check links
-        uses: lycheeverse/lychee-action@v1
+        uses: lycheeverse/lychee-action@v2.0.2
         with:
           args: 'README.md docs/index.html --no-progress --timeout 10 --exclude https://fonts.googleapis.com/ --exclude https://fonts.gstatic.com/'
           fail: true
