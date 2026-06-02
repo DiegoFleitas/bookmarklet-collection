@@ -101,7 +101,8 @@
               const purgeUrl = `https://purge.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main/${name}/index.js`;
               const r = await fetch(purgeUrl);
               if (!r.ok) throw new Error(r.status);
-              purgeBtn.textContent = "purged — reload to verify";
+              purgeBtn.textContent = "purged — reloading…";
+              setTimeout(() => location.reload(), 3500);
             } catch {
               purgeBtn.textContent = "purge failed — try again";
               purgeBtn.disabled = false;
