@@ -124,7 +124,7 @@
         li.className = "bookmarklet-item";
         const a = document.createElement("a");
         a.className = "bookmarklet-link";
-        a.href = "javascript:" + encodeURIComponent(code);
+        a.href = "javascript:" + encodeURIComponent(code.trim().replace(/^javascript:/, ""));
         a.textContent = displayName;
         a.setAttribute("draggable", "true");
         a.onclick = (e) => {
