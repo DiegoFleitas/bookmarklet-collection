@@ -32,3 +32,6 @@ This bookmarklet collects and displays rich information about members of a Disco
 
 > [!WARNING]
 > This script makes authenticated calls to Discord's API in ways that may violate Discord's Terms of Service. Use it **at your own risk**, sparingly, and only on accounts and servers you control or have explicit permission to analyze.
+
+> [!WARNING]
+> **Storing your Discord authentication token in a bookmark is dangerous.** Any website you visit while the bookmark exists in your browser bar could potentially read it via browser extension APIs or bookmark sync services. Anyone with physical access to your device or browser profile can extract it. Consider using a runtime prompt for the token instead of embedding it permanently.

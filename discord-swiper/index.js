@@ -62,9 +62,9 @@ javascript: (function () {
                     lastPos = membersList.scrollTop;
                 }
             }
-            document.getElementsByClassName("everyoneswiper-content")[0].innerHTML = 'Processing...';
-            let code = "<code>" + JSON.stringify(usernames) + "</code>";
-            document.getElementsByClassName("everyoneswiper-content")[0].innerHTML = code;
+            document.getElementsByClassName("everyoneswiper-content")[0].textContent = 'Processing...';
+            let code = JSON.stringify(usernames, null, 2);
+            document.getElementsByClassName("everyoneswiper-content")[0].textContent = code;
         }
 
         async function sleep(ms) {
@@ -101,14 +101,16 @@ javascript: (function () {
                         console.log(userData);
                         usernames.push(userData);
                         // FIXME: normal to break here
+                        if (!/^\d+$/.test(response.user.id)) return;
+                        var safeUsername = response.user.username.replace(/["\\]/g, '');
                         var toProcess = $x('//img[starts-with(@src, "https://cdn.discordapp.com/avatars/'
                             + response.user.id +
                             '")]/ancestor::div[starts-with(@class,"member-")]');
 						if (!toProcess.length) {
 							toProcess = $x('//div[starts-with(@aria-label, "'
-                                + response.user.username +
+                                + safeUsername +
                                 '")]/ancestor::div[starts-with(@class,"member-")] | //span[starts-with(@class,"roleColor-")][text()="'
-								+ response.user.username +
+								+ safeUsername +
 								'"]/ancestor::div[starts-with(@class,"member-")]');
 						}
                         toProcess.forEach((elem, index) => {
@@ -232,8 +234,8 @@ javascript: (function () {
             }
             // When the user clicks on <span> (x), close the modal
             span.onclick = function () {
-                let code = "<code>" + JSON.stringify(usernames) + "</code>";
-                document.getElementsByClassName("everyoneswiper-content")[0].innerHTML = code;
+                let code = JSON.stringify(usernames, null, 2);
+                document.getElementsByClassName("everyoneswiper-content")[0].textContent = code;
                 modal.style.display = "none";
                 throw new Error('exit');
                 debugger;
