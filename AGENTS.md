@@ -36,4 +36,4 @@
 
 ## Skills
 
-Design skills live in `.agents/skills/` and `.cursor/skills/` — 18 skills for UX review, animation, color, onboarding, etc.
+Design skills live in `.agents/skills/` — 18 skills for UX review, animation, color, onboarding, etc.
