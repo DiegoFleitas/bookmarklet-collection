@@ -111,7 +111,17 @@
         a.href = "javascript:" + encodeURIComponent(code);
         a.textContent = displayName;
         a.setAttribute("draggable", "true");
-        a.onclick = () => false;
+        a.onclick = (e) => {
+          e.preventDefault();
+          if (li.querySelector(".drag-hint")) return false;
+          const hint = Object.assign(document.createElement("span"), {
+            className: "drag-hint",
+            textContent: "↖ drag to your bookmarks bar"
+          });
+          li.appendChild(hint);
+          hint.addEventListener("animationend", () => hint.remove());
+          return false;
+        };
         // Drag event: set bookmarklet code as text/plain for bookmarks bar
         a.addEventListener("dragstart", (e) => {
           e.dataTransfer.setData("text/plain", a.href);
