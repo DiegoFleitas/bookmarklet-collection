@@ -89,10 +89,19 @@
         if (!isJs(code)) throw new Error("Invalid response");
         const actualHash = await sha384(code);
         if (actualHash !== expectedHash) {
-          listEl.appendChild(Object.assign(document.createElement("li"), {
-            className: "bookmarklet-item error-item",
-            textContent: `${displayName} — integrity check failed — the code may have been modified or the CDN cache is stale`
-          }));
+          const errLi = document.createElement("li");
+          errLi.className = "bookmarklet-item error-item";
+          errLi.append(
+            `${displayName} — integrity check failed — the code may have been modified or the CDN cache is stale (`,
+            Object.assign(document.createElement("a"), {
+              href: "https://www.jsdelivr.com/tools/purge",
+              target: "_blank",
+              rel: "noopener noreferrer",
+              textContent: "purge CDN cache"
+            }),
+            ")"
+          );
+          listEl.appendChild(errLi);
           return;
         }
         const li = document.createElement("li");
