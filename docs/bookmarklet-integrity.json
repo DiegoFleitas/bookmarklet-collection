@@ -2,10 +2,10 @@
   "add-tmdb-film-to-letterboxd": "sha384-fnhVbJSgnIo91t9R4tW/GshDxYvftx0p1KVGpi+Eq+jgUyqPLzzfGycGjsUh7fbW",
   "bypass-article-paywall": "sha384-fRUsN/+WYuVorMkIfDLnY1fy/pCrC8iLKiVq7FdaeW6m3dKAMNjo8Vc36oVuGW/I",
   "clone-letterboxd-list-to-csv": "sha384-wWIfnQfpYw6WrL3WIY1YJRykF0zndCBjhGScyCyIxDY8ICpYKtk2V/rzfqwwt5dA",
-  "discord-everyone-tagger": "sha384-Iferq+X7GL+is2QelIoQa+hG7RFVTkH49mI2hfzdZRuE02slYBHKkfHDLiya51yx",
-  "discord-swiper": "sha384-fcSYXf8Q8FqZzZxzn47fWo84HFhzvzKDiQpklGul8NLWCet07vAC2n/RbXVvL3tQ",
+  "discord-everyone-tagger": "sha384-9nL/Gg32Ek88TqPEg4id63+oBY4o8SJC2HvgnnyRgrVrhbzgPoG5CU0URbpEhbkH",
+  "discord-swiper": "sha384-Yom5rK+zZgeZgaQBGBAzXg7vw48cmQUqgJCAWRt9fE0uA3Qt8NQ3yWZ/Wbqa5m7u",
   "dom-change-debugger": "sha384-FC93I6wtObparNEpE/O/vJDTttNQAEE1FVvxuW8VJVA6A/WFy9beFQuFmUQZ208B",
-  "find-sourceban": "sha384-rh95FTWiUZRqf0ZguD7dn2olOjW/nFx4vi9YhSxM2iajJztSQRZN0hOkEuJd6MLR",
+  "find-sourceban": "sha384-nn93JxgRaa8/uSglx+DMFkTZHDACyqvA2TMmT1/XDHCwqpd9IPDZkSMCiCgr7C1f",
   "form-filler": "sha384-EqYaN8KdTANqNn/d2GLkLo5gYtjc2iQpYsSekt3pfua+q5dl2y2+f8BOdgOQWmHV",
   "justwatch-watchlist-exporter": "sha384-TRFihZmM9ouV78GHTkoUyzMZwgEI73RBl0XErmuU/xNCh5PjtxNBJPqnC6U+yeBf",
   "parse-sourcebans": "sha384-Bp5dSaVyomHRLjtAiHus6E+pfkOkyOyzlBx4gOqDIw+o3kVL3dKxvMBuZzWlrDHD",
@@ -13,5 +13,5 @@
   "steam-group-snooper": "sha384-PrGaV6xaBUjx+711x0jh7wgURW45R6AKlGdLPeV6Zl5NsAT7wk7iq4eutbSdvZqZ",
   "top-down-buttons": "sha384-5Rx28WWafPZI41dhujPsfbdsl6GVy56IQNshfdAls6MrIflavbZ1EL11mXNNSiHb",
   "yt-auto-playlist": "sha384-ET0tJmxD3hAWTuRDP/bF/OkZy0FOgdf9hYa6gImtJm744RuLJxtlYkzSryiOe/jZ",
-  "yt-waybackmachine": "sha384-ndz6i/FK+C6fVPOo4nAkNiJeXquYI3PfqQHsEQI2zAtq2mxHHElCyfGx4MkHLaLl"
+  "yt-waybackmachine": "sha384-qgfH66+UMeixdPe3o1MeMru8Aa3XtrjRIQPPYw8g1eg4WUdpn/8MWow3pLvnMRL3"
 }
