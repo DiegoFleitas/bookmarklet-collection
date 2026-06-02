@@ -8,11 +8,10 @@ When run, it overlays a YouTube player on top of the current page and starts pla
 
 ## Usage
 
-1. Create a new bookmark in your browser.
-2. Paste the bookmarklet JavaScript as the bookmark's URL.
-3. Navigate to a YouTube channel page or any page that lists multiple YouTube videos.
-4. Click the bookmarklet.
-5. Use the in‑page player to:
+1. Install the bookmarklet: drag it from the [collection site](https://diegofleitas.github.io/bookmarklet-collection/) into your bookmarks bar, or create a new bookmark and paste the code from `index.js` as the URL.
+2. Navigate to a YouTube channel page or any page that lists multiple YouTube videos.
+3. Click the bookmarklet.
+4. Use the in‑page player to:
    - Start or pause playback.
    - Seek within the playlist.
    - Click the small arrow icon in the top‑left of the player to open the playlist in a new tab.

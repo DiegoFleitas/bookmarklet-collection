@@ -1,3 +1,5 @@
+# Virtual scrollwheel
+
 ## Overview
 
 This bookmarklet adds a small vertical set of buttons on the right edge of the page that let you quickly scroll:
@@ -10,11 +12,10 @@ The buttons appear as semi‑transparent controls that stay fixed while you scro
 
 ## Usage
 
-1. Create a new bookmark in your browser.
-2. Paste the bookmarklet JavaScript from `index.js` as the bookmark's URL.
-3. Visit any long webpage.
-4. Click the bookmarklet to inject the scroll buttons.
-5. Hover over the **up** or **down** buttons to auto‑scroll; click them to jump smoothly to the top or bottom.
+1. Install the bookmarklet: drag it from the [collection site](https://diegofleitas.github.io/bookmarklet-collection/) into your bookmarks bar, or create a new bookmark and paste the code from `index.js` as the URL.
+2. Visit any long webpage.
+3. Click the bookmarklet to inject the scroll buttons.
+4. Hover over the **up** or **down** buttons to auto‑scroll; click them to jump smoothly to the top or bottom.
 
 ## Notes
 

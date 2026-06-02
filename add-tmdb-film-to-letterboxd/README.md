@@ -1,3 +1,5 @@
+# Add TMDb film to Letterboxd
+
 ## Overview
 
 This bookmarklet helps you jump from a **TMDb** movie page to the corresponding **Letterboxd** film page (or film import view) for new titles.
@@ -6,12 +8,11 @@ When you run it on a TMDb movie page, it extracts the numeric TMDb movie ID from
 
 ## Usage
 
-1. Create a new bookmark in your browser.
-2. Paste the bookmarklet JavaScript as the bookmark's URL.
-3. Navigate to a TMDb movie page, for example:
+1. Install the bookmarklet: drag it from the [collection site](https://diegofleitas.github.io/bookmarklet-collection/) into your bookmarks bar, or create a new bookmark and paste the code from `index.js` as the URL.
+2. Navigate to a TMDb movie page, for example:
    - `https://www.themoviedb.org/movie/NEW_ID`
-4. Click the bookmarklet.
-5. A new tab will open on Letterboxd for that movie or an import screen where you can add it to Letterboxd.
+3. Click the bookmarklet.
+4. A new tab will open on Letterboxd for that movie or an import screen where you can add it to Letterboxd.
 
 ## Notes
 

@@ -1,3 +1,5 @@
+# Find SourceBan
+
 ## Overview
 
 This bookmarklet is intended for use on the **ban list page** of a SourceBans++ installation (for example `https://www.skial.com/sourcebans/index.php?p=banlist`). Given a SteamID64, it finds the corresponding entry in the ban table and automatically opens its detail row.
@@ -6,12 +8,11 @@ It is useful when you already know a player's SteamID64 and want to quickly jump
 
 ## Usage
 
-1. Create a new bookmark in your browser.
-2. Paste the bookmarklet JavaScript as the bookmark's URL.
-3. Open a SourceBans++ ban list page.
-4. Click the bookmarklet.
-5. When prompted for `longid`, enter the SteamID64 (for example `76561198065246891`).
-6. The script will locate the row containing that ID and programmatically click the associated summary row so that the detailed ban information is expanded.
+1. Install the bookmarklet: drag it from the [collection site](https://diegofleitas.github.io/bookmarklet-collection/) into your bookmarks bar, or create a new bookmark and paste the code from `index.js` as the URL.
+2. Open a SourceBans++ ban list page.
+3. Click the bookmarklet.
+4. When prompted for `longid`, enter the SteamID64 (for example `76561198065246891`).
+5. The script will locate the row containing that ID and programmatically click the associated summary row so that the detailed ban information is expanded.
 
 ## Notes
 
