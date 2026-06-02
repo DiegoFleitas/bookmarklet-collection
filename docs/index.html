@@ -140,7 +140,6 @@
         };
         // Drag event: set bookmarklet code as text/plain for bookmarks bar
         a.addEventListener("dragstart", (e) => {
-          e.preventDefault();
           e.dataTransfer.setData("text/plain", a.href);
           e.dataTransfer.effectAllowed = "copyLink";
         });
