@@ -55,6 +55,14 @@
     // Animate page load with staggered reveals
     window.addEventListener('DOMContentLoaded', () => {
       document.querySelector('.animated-reveal').classList.add('show');
+      if (new URLSearchParams(location.search).has("purged")) {
+        history.replaceState(null, "", location.pathname);
+        const notice = Object.assign(document.createElement("p"), {
+          className: "purge-notice",
+          textContent: "CDN cache purge requested — propagation may take a few minutes. If errors persist, purge again."
+        });
+        document.querySelector(".page-header").appendChild(notice);
+      }
     });
     const CDN = "https://cdn.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main";
     const listEl = document.getElementById("bookmarklet-list");
@@ -102,7 +110,7 @@
               const r = await fetch(purgeUrl);
               if (!r.ok) throw new Error(r.status);
               purgeBtn.textContent = "purged — reloading…";
-              setTimeout(() => location.reload(), 3500);
+              setTimeout(() => location.assign(location.pathname + "?purged=1"), 3500);
             } catch {
               purgeBtn.textContent = "purge failed — try again";
               purgeBtn.disabled = false;

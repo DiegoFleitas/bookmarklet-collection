@@ -238,6 +238,15 @@ body {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
+.purge-notice {
+  margin: var(--space-3) 0 0;
+  padding: 0.4em 0.8em;
+  border-left: 2px solid var(--color-accent3);
+  color: var(--color-accent3);
+  font-family: var(--font-family-mono);
+  font-size: 0.85rem;
+}
+
 .purge-btn {
   background: none;
   border: none;
