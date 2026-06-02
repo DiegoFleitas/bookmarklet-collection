@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://purge.jsdelivr.net; img-src 'self' data:;">
   <title>Bookmarklet Collection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -91,16 +91,23 @@
         if (actualHash !== expectedHash) {
           const errLi = document.createElement("li");
           errLi.className = "bookmarklet-item error-item";
-          errLi.append(
-            `${displayName} — integrity check failed — the code may have been modified or the CDN cache is stale (`,
-            Object.assign(document.createElement("a"), {
-              href: "https://www.jsdelivr.com/tools/purge",
-              target: "_blank",
-              rel: "noopener noreferrer",
-              textContent: "purge CDN cache"
-            }),
-            ")"
-          );
+          const purgeBtn = document.createElement("button");
+          purgeBtn.className = "purge-btn";
+          purgeBtn.textContent = "purge CDN cache";
+          purgeBtn.onclick = async () => {
+            purgeBtn.disabled = true;
+            purgeBtn.textContent = "purging…";
+            try {
+              const purgeUrl = `https://purge.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main/${name}/index.js`;
+              const r = await fetch(purgeUrl);
+              if (!r.ok) throw new Error(r.status);
+              purgeBtn.textContent = "purged — reload to verify";
+            } catch {
+              purgeBtn.textContent = "purge failed — try again";
+              purgeBtn.disabled = false;
+            }
+          };
+          errLi.append(`${displayName} — integrity check failed — CDN cache may be stale (`, purgeBtn, ")");
           listEl.appendChild(errLi);
           return;
         }
