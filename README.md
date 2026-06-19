@@ -2,7 +2,7 @@
 
 [![Docs / site check](https://github.com/diegofleitas/bookmarklet-collection/actions/workflows/pages-check.yml/badge.svg?branch=main)](https://github.com/diegofleitas/bookmarklet-collection/actions/workflows/pages-check.yml)
 
-A small collection of bookmarklets I wrote and still use occasionally. Most are not actively maintained and may no longer work on every site.
+A small collection of JavaScript bookmarklets for everyday browser tasks. Most are not actively maintained and may break if sites update their markup.
 
 **[Browse and install bookmarklets →](https://diegofleitas.github.io/bookmarklet-collection/)**
 
@@ -24,42 +24,49 @@ A small collection of bookmarklets I wrote and still use occasionally. Most are 
 | [Steam group snooper](steam-group-snooper/) | Extracts member profile URLs from a Steam group's Members tab (legacy layout) |
 | [Virtual scrollwheel](virtual-scrollwheel/) | Injects fixed scroll buttons (up / rest / down) on any long webpage |
 | [YouTube auto‑playlist](yt-auto-playlist/) | Builds and plays an in-page playlist from YouTube videos found on the current page |
-| [YouTube Wayback Machine](yt-waybackmachine/) | Opens a YouTube video ID in the Wayback Machine's 2013 archived snapshot |
+| [YouTube Wayback Machine](yt-waybackmachine/) | Opens a YouTube video in the Wayback Machine's 2013 archived snapshot |
 
 ## How it works
 
-The live page loads `docs/bookmarklet-integrity.json`, which lists each bookmarklet directory with a SHA-384 hash of its `index.js`. For each entry it fetches the script from jsDelivr and verifies the hash before rendering a draggable link. Modified or mismatched code is omitted.
+The live page fetches `docs/bookmarklet-integrity.json`, which maps each bookmarklet directory to a SHA-384 hash of its `index.js`. For each entry it fetches the script from jsDelivr CDN and verifies the hash client-side before rendering a draggable `javascript:` link. Code that fails verification is silently omitted.
 
-> After editing any `index.js`, regenerate the manifest (`npm run update-integrity`) and commit it. CI will fail if the manifest is stale.
+> [!NOTE]
+> The live page only serves code from the `main` branch. If changes look stale after pushing, purge the CDN cache at [jsdelivr.com/tools/purge](https://www.jsdelivr.com/tools/purge).
 
 ## Adding a bookmarklet
 
-1. Create a root-level directory (e.g. `my-bookmarklet/`) with `index.js` as a single line.
+1. Create a root-level directory (e.g. `my-bookmarklet/`) containing `index.js` as a single `javascript:(function(){...})()` expression.
 2. Optionally add a `README.md` with usage notes.
-3. Run `npm run update-integrity` and commit `docs/bookmarklet-integrity.json`.
-4. Push to `main` — CI verifies sync, then the live page picks it up automatically.
+3. Run `pnpm run update-integrity` and commit `docs/bookmarklet-integrity.json`.
+4. Push to `main`. CI verifies sync, and the live page picks it up automatically.
 
-Syntax check: [Esprima validator](https://esprima.org/demo/validate.html).
-CDN cache stuck? Use the [jsDelivr purge tool](https://www.jsdelivr.com/tools/purge).
+> [!TIP]
+> Validate syntax before committing: [Esprima validator](https://esprima.org/demo/validate.html)
 
-## Contributing
+## Development
 
 ```bash
-npm install
-npm run update-integrity   # after editing any index.js
-npm run verify-integrity
-npm run lint
+pnpm install
+pnpm run update-integrity   # after editing any index.js
+pnpm run verify-integrity
+pnpm run lint
+pnpm run dev                # serve docs/ locally
 ```
+
+> [!IMPORTANT]
+> After editing any `index.js`, always run `pnpm run update-integrity` and commit `docs/bookmarklet-integrity.json`. CI fails if the manifest is stale.
+
+Requires Node ≥ 24 (see `.nvmrc`).
 
 ## Project structure
 
 ```text
 bookmarklet-collection/
 ├── <bookmarklet-name>/
-│   ├── index.js       # bookmarklet code, single line
+│   ├── index.js       # bookmarklet code, verbatim (no build step)
 │   └── README.md      # usage notes (optional)
 ├── docs/
-│   ├── index.html     # GitHub Pages static site
+│   ├── index.html                  # GitHub Pages static site
 │   ├── bookmarklet-integrity.json  # SHA-384 manifest
 │   └── styles.css
 └── scripts/
