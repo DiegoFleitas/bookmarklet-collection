@@ -55,16 +55,16 @@ javascript:(function(){
             var regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/g;
             var matches = [...document.body.innerHTML.matchAll(regex)];
             ids = matches.map(match => match[1]);
-            ids = [...new Set(ids)]; // Ensure unique video IDs
+            ids = [...new Set(ids)];
         }
 
         if (ids.length === 0) throw new Error('No videos found.');
 
         let extraIds = ids.slice(40);
         src = ids.join();
-        console.log('found ' + ids.length + ' videos:', 'https://www.youtube.com/watch_videos?video_ids=' + src);
+        console.log(`found ${ids.length} videos:`, `https://www.youtube.com/watch_videos?video_ids=${src}`);
         if (extraIds.length) {
-            console.log('player only supports 40 videos at a time, heres a direct link to the rest', 'https://www.youtube.com/watch_videos?video_ids=' + extraIds.join());
+            console.log('player only supports 40 videos at a time, heres a direct link to the rest', `https://www.youtube.com/watch_videos?video_ids=${extraIds.join()}`);
         }
         var count = ids.length;
 
@@ -158,7 +158,7 @@ function onPlayerReady(event) {
 }
 
 function Go() {
-    var url = 'https://www.youtube.com/watch_videos?video_ids=' + src;
+    var url = `https://www.youtube.com/watch_videos?video_ids=${src}`;
     var win = window.open(url, '_blank');
     win.focus();
 }
@@ -196,7 +196,7 @@ function getStart() {
         time = (h * 3600) + (m * 60) + s;
     }
     if (stamp) {
-        console.log('seeking to ' + time + 's (' + stamp + '):', 'https://www.youtube.com/watch?v=' + id + '&t=' + time + 's');
+        console.log(`seeking to ${time}s (${stamp}):`, `https://www.youtube.com/watch?v=${id}&t=${time}s`);
     };
     return time;
 }
@@ -206,7 +206,7 @@ function onError(event) {
         var code = event.data.toString();
         switch (code) {
             case '2':
-                console.log('invalid parameter, playlist:', 'https://www.youtube.com/watch_videos?video_ids=' + src);
+                console.log('invalid parameter, playlist:', `https://www.youtube.com/watch_videos?video_ids=${src}`);
                 break;
             case '5':
                 console.log('not playable in HTML5 player:', currentVideoUrl());
@@ -243,7 +243,7 @@ function idFromVideo() {
     return player.getVideoData().video_id;
 }
 
-// Player may not be ready yet, so never let a missing id break the log line.
+/* Player may not be ready yet, so never let a missing id break the log line. */
 function currentVideoId() {
     try {
         return idFromVideo();
@@ -254,7 +254,7 @@ function currentVideoId() {
 
 function currentVideoUrl() {
     var id = currentVideoId();
-    return id ? 'https://www.youtube.com/watch?v=' + id : '(unknown video)';
+    return id ? `https://www.youtube.com/watch?v=${id}` : '(unknown video)';
 }
 
 function newVideo() {
@@ -287,7 +287,7 @@ function badVideo() {
     var id = currentVideoId();
     if (id && skipped.indexOf(id) < 0) {
         skipped.push(id);
-        console.log('skipped ' + skipped.length + ' so far, watch them here:', 'https://www.youtube.com/watch_videos?video_ids=' + skipped.join());
+        console.log(`skipped ${skipped.length} so far, watch them here:`, `https://www.youtube.com/watch_videos?video_ids=${skipped.join()}`);
     }
     setTimeout(function () {
         skipVideo();
