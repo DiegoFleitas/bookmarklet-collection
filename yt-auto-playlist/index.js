@@ -55,8 +55,9 @@ javascript:(function(){
             var regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/g;
             var matches = [...document.body.innerHTML.matchAll(regex)];
             ids = matches.map(match => match[1]);
-            ids = [...new Set(ids)];
         }
+
+        ids = [...new Set(ids)];
 
         if (ids.length === 0) throw new Error('No videos found.');
 
@@ -266,7 +267,26 @@ function newVideo() {
 }
 
 function skipVideo() {
-    player.nextVideo();
+    var i = -1;
+    try { i = player.getPlaylistIndex(); } catch (e) { }
+    var next = i > -1 ? i + 1 : skipped.length;
+    if (ids[next] == null) {
+        console.log('no videos left to try');
+        return;
+    }
+    console.log(`advancing to index ${next}:`, `https://www.youtube.com/watch?v=${ids[next]}`);
+    player.playVideoAt(next);
+    setTimeout(function () {
+        try {
+            var after = player.getPlaylistIndex();
+            if (after != next) {
+                console.log(`still at index ${after}, forcing loadVideoById`);
+                player.loadVideoById(ids[next]);
+            }
+        } catch (e) {
+            console.log('could not verify advance:', e);
+        }
+    }, 2000);
 }
 
 function stopVideo() {
@@ -290,7 +310,7 @@ function badVideo() {
         console.log(`skipped ${skipped.length} so far, watch them here:`, `https://www.youtube.com/watch_videos?video_ids=${skipped.join()}`);
     }
     setTimeout(function () {
-        skipVideo();
+        try { skipVideo(); } catch (e) { console.log('could not advance:', e); }
     }, 5000);
 }
 })();
