@@ -16,6 +16,7 @@ javascript:(function(){
         document.body.appendChild(loader);
         var last = '';
         var done = false;
+        var skipped = [];
         var uniq = [];
         var hrefs = [];
         var links = document.links;
@@ -61,7 +62,10 @@ javascript:(function(){
 
         let extraIds = ids.slice(40);
         src = ids.join();
-        console.log('player only supports 40 videos at a time, heres a direct link to the rest', 'https://www.youtube.com/watch_videos?video_ids=' + extraIds.join());
+        console.log('found ' + ids.length + ' videos:', 'https://www.youtube.com/watch_videos?video_ids=' + src);
+        if (extraIds.length) {
+            console.log('player only supports 40 videos at a time, heres a direct link to the rest', 'https://www.youtube.com/watch_videos?video_ids=' + extraIds.join());
+        }
         var count = ids.length;
 
         var z = document.createElement('div');
@@ -183,7 +187,6 @@ function getStart() {
         h = m = s = '0';
         var miregex = /t=((\d+)h)?((\d+)m)?(\d+)s/g;
         hms = miregex.exec(stamp);
-        console.log(hms);
         hms.forEach(function (element, k) {
             if (element == null) hms[k] = null;
         });
@@ -193,7 +196,7 @@ function getStart() {
         time = (h * 3600) + (m * 60) + s;
     }
     if (stamp) {
-        console.log(stamp + ' is ' + time)
+        console.log('seeking to ' + time + 's (' + stamp + '):', 'https://www.youtube.com/watch?v=' + id + '&t=' + time + 's');
     };
     return time;
 }
@@ -203,28 +206,28 @@ function onError(event) {
         var code = event.data.toString();
         switch (code) {
             case '2':
-                console.log('invalid parameter ' + src);
+                console.log('invalid parameter, playlist:', 'https://www.youtube.com/watch_videos?video_ids=' + src);
                 break;
             case '5':
-                console.log('not playable in HTML5 player');
+                console.log('not playable in HTML5 player:', currentVideoUrl());
                 break;
             case '100':
-                console.log('video not found');
+                console.log('video not found:', currentVideoUrl());
                 break;
             case '101':
-                console.log('video wont play in embbeded players');
+                console.log('video wont play in embbeded players, skipping:', currentVideoUrl());
                 badVideo();
                 break;
             case '150':
-                console.log('video (' + idFromVideo() + ') wont play in embbeded players (duplicate)');
+                console.log('video wont play in embbeded players (duplicate), skipping:', currentVideoUrl());
                 badVideo();
                 break;
             case '152':
-                console.log('video wont play in embbeded players (152)');
+                console.log('video wont play in embbeded players (152), skipping:', currentVideoUrl());
                 badVideo();
                 break;
             default:
-                console.log('unexpected error, code:', code);
+                console.log('unexpected error, code:', code, currentVideoUrl());
         }
     } catch (e) {
         console.log(e);
@@ -238,6 +241,20 @@ function loadPlaylist(src) {
 
 function idFromVideo() {
     return player.getVideoData().video_id;
+}
+
+// Player may not be ready yet, so never let a missing id break the log line.
+function currentVideoId() {
+    try {
+        return idFromVideo();
+    } catch (e) {
+        return '';
+    }
+}
+
+function currentVideoUrl() {
+    var id = currentVideoId();
+    return id ? 'https://www.youtube.com/watch?v=' + id : '(unknown video)';
 }
 
 function newVideo() {
@@ -267,6 +284,11 @@ function lastVideo() {
 }
 
 function badVideo() {
+    var id = currentVideoId();
+    if (id && skipped.indexOf(id) < 0) {
+        skipped.push(id);
+        console.log('skipped ' + skipped.length + ' so far, watch them here:', 'https://www.youtube.com/watch_videos?video_ids=' + skipped.join());
+    }
     setTimeout(function () {
         skipVideo();
     }, 5000);
