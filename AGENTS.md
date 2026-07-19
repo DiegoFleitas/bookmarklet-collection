@@ -39,7 +39,7 @@
 Three separate caches serve stale bookmarklet code. Defeat all of them, or you will debug code you are not running:
 
 1. **The saved bookmark** holds its own copy — re-drag it from the page after any change.
-2. **jsDelivr** — `pnpm run purge-cdn -- <name>`, then wait 1–5 min for edge propagation.
+2. **jsDelivr** — `pnpm run purge-cdn -- <name>` purges, then polls until the CDN hash matches the manifest. Repeated purges of the same path get throttled for ~30 min while *still* reporting `status: finished`, so a purge can be a silent no-op; the script detects this and tells you the reset time instead of polling pointlessly.
 3. **Browser HTTP cache** — `docs/index.html` self-heals by refetching with `cache: "reload"` when the hash mismatches; keep that retry.
 
 Fastest loop: `pnpm run build -- <name>`, paste into the page console. Bypasses all three.
