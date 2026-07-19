@@ -86,17 +86,26 @@
       return "sha384-" + btoa(String.fromCharCode(...new Uint8Array(hash)));
     }
 
+    // Fetch the file and return its code only if the SHA-384 matches; else null.
+    async function verifyFetch(url, expectedHash, opts) {
+      const res = await fetch(url, opts);
+      if (!res.ok) throw new Error(res.status + " " + res.statusText);
+      const code = await res.text();
+      if (!isJs(code)) throw new Error("Invalid response");
+      return (await sha384(code)) === expectedHash ? code : null;
+    }
+
     async function loadOne(name, expectedHash) {
       const url = `${CDN}/${name}/index.js`;
       const displayName = name.replace(/-/g, " ");
       const readmeUrl = `https://github.com/DiegoFleitas/bookmarklet-collection/blob/main/${name}/README.md`;
       try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(res.status + " " + res.statusText);
-        const code = await res.text();
-        if (!isJs(code)) throw new Error("Invalid response");
-        const actualHash = await sha384(code);
-        if (actualHash !== expectedHash) {
+        // Verify the browser-cached copy first; if its hash is stale, retry once
+        // bypassing the HTTP cache so the page self-heals without a hard refresh.
+        let code = await verifyFetch(url, expectedHash);
+        if (code === null) code = await verifyFetch(url, expectedHash, { cache: "reload" });
+        if (code === null) {
+          // Even a revalidated fetch mismatches → the CDN itself is stale.
           const errLi = document.createElement("li");
           errLi.className = "bookmarklet-item error-item";
           const purgeBtn = document.createElement("button");
