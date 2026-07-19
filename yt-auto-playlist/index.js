@@ -220,9 +220,6 @@ function onError(event) {
                 break;
             default:
                 console.log('unexpected error, code:', code);
-                var container = document.getElementById('ytAutoPliframecontainer');
-                if (container && container.parentNode) container.parentNode.removeChild(container);
-                if (player) player.destroy();
         }
     } catch (e) {
         console.log(e);
