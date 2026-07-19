@@ -219,10 +219,10 @@ function onError(event) {
                 badVideo();
                 break;
             default:
-                console.log('unexpected error');
-                divX.parentElement.removeChild(divX);
-                iframediv.parentElement.removeChild(iframediv);
-                player.destroy();
+                console.log('unexpected error, code:', code);
+                var container = document.getElementById('ytAutoPliframecontainer');
+                if (container && container.parentNode) container.parentNode.removeChild(container);
+                if (player) player.destroy();
         }
     } catch (e) {
         console.log(e);
