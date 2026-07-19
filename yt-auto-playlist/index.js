@@ -1,18 +1,18 @@
 javascript:(function(){
   try {
-    var exists = document.getElementById('diegoiframecontainer');
+    var exists = document.getElementById('ytAutoPliframecontainer');
     if (exists != null) {
-        var c = document.getElementById('diegoiframecontainer');
+        var c = document.getElementById('ytAutoPliframecontainer');
         c.hidden = false;
         if (src != null) loadPlaylist(src);
         console.log('already running');
     } else {
         var loader = document.createElement('div');
-        loader.setAttribute('id', 'diegoloader');
-        loader.setAttribute('style', 'position:absolute;left:50%;top:50%;z-index:1;border:10px solid #f3f3f3;border-top:10px solid red;border-radius:50%;width:80px;height:80px;animation:diegospin 1s linear infinite;');
+        loader.setAttribute('id', 'ytAutoPlloader');
+        loader.setAttribute('style', 'position:absolute;left:50%;top:50%;z-index:1;border:10px solid #f3f3f3;border-top:10px solid red;border-radius:50%;width:80px;height:80px;animation:ytAutoPlspin 1s linear infinite;');
         var mystyle = document.createElement('style');
         document.head.appendChild(mystyle);
-        mystyle.textContent = '@keyframes diegospin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}';
+        mystyle.textContent = '@keyframes ytAutoPlspin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}';
         document.body.appendChild(loader);
         var last = '';
         var done = false;
@@ -65,12 +65,12 @@ javascript:(function(){
         var count = ids.length;
 
         var z = document.createElement('div');
-        z.setAttribute('id', 'diegoiframecontainer');
+        z.setAttribute('id', 'ytAutoPliframecontainer');
         z.setAttribute('style', 'min-width:100%;min-height:100%;position:fixed;left:25%;top:25%; ');
         document.body.appendChild(z);
         z.style.zIndex = 2147483646;
         var y = document.createElement('div');
-        y.setAttribute('id', 'diegoplayer');
+        y.setAttribute('id', 'ytAutoPlplayer');
         z.appendChild(y);
         var tag = document.createElement('script');
         tag.src = 'https://www.youtube.com/iframe_api';
@@ -82,7 +82,7 @@ javascript:(function(){
         }
         var player;
         window.onYouTubeIframeAPIReady = function () {
-            player = new YT.Player('diegoplayer', {
+            player = new YT.Player('ytAutoPlplayer', {
                 height: '360',
                 width: '640',
                 events: {
@@ -97,7 +97,7 @@ javascript:(function(){
                 }
             });
         };
-        var iframe = document.getElementById('diegoplayer');
+        var iframe = document.getElementById('ytAutoPlplayer');
         iframe.setAttribute('enablejsapi', '1');
     }
 } catch (ex) {
@@ -119,20 +119,20 @@ function validateYouTubeUrl(url) {
 
 function onPlayerReady(event) {
     event.target.playVideo();
-    var elem = document.getElementById('diegoiframecontainer');
+    var elem = document.getElementById('ytAutoPliframecontainer');
     var group = document.createElement('div');
-    group.setAttribute('id', 'diegodivgroup');
+    group.setAttribute('id', 'ytAutoPldivgroup');
     group.setAttribute('style', 'width:640px;background-color:#0C0C0D;display:table');
     elem.insertBefore(group, elem.firstChild);
     var divX = document.createElement('div');
     divX.textContent = '✖';
-    divX.setAttribute('id', 'diegodivX');
+    divX.setAttribute('id', 'ytAutoPldivX');
     divX.setAttribute('style', 'margin:0px 10px;cursor:pointer;color:#F0F0F0;display:inline;vertical-align:top;');
     group.appendChild(divX);
     divX.addEventListener('click', Close, false);
     var divP = document.createElement('div');
     divP.textContent = '⮫';
-    divP.setAttribute('id', 'diegodivPlus');
+    divP.setAttribute('id', 'ytAutoPldivPlus');
     divP.setAttribute('style', 'margin:0px 10px;cursor:pointer;color:#F0F0F0;display:inline;vertical-align:top;');
     group.appendChild(divP);
     divP.addEventListener('click', Go, false);
@@ -147,7 +147,7 @@ function Go() {
 
 function Close() {
     stopVideo();
-    var c = document.getElementById('diegoiframecontainer');
+    var c = document.getElementById('ytAutoPliframecontainer');
     c.hidden = true;
 }
 
@@ -217,8 +217,8 @@ function onError(event) {
 }
 
 function loadPlaylist(src) {
-    var diegoplayer = YT.get('diegoplayer');
-    if (diegoplayer != null) diegoplayer.loadPlaylist(src, 0);
+    var ytAutoPlplayer = YT.get('ytAutoPlplayer');
+    if (ytAutoPlplayer != null) ytAutoPlplayer.loadPlaylist(src, 0);
 }
 
 function idFromVideo() {
