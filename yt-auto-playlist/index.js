@@ -12,7 +12,7 @@ javascript:(function(){
         loader.setAttribute('style', 'position:absolute;left:50%;top:50%;z-index:1;border:10px solid #f3f3f3;border-top:10px solid red;border-radius:50%;width:80px;height:80px;animation:diegospin 1s linear infinite;');
         var mystyle = document.createElement('style');
         document.head.appendChild(mystyle);
-        mystyle.innerHTML = '@keyframes diegospin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}';
+        mystyle.textContent = '@keyframes diegospin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}';
         document.body.appendChild(loader);
         var last = '';
         var done = false;
@@ -101,7 +101,7 @@ javascript:(function(){
         iframe.setAttribute('enablejsapi', '1');
     }
 } catch (ex) {
-    loader.parentNode.removeChild(loader);
+    if (typeof loader !== 'undefined' && loader && loader.parentNode) loader.parentNode.removeChild(loader);
     console.log(ex);
 }
 
@@ -125,13 +125,13 @@ function onPlayerReady(event) {
     group.setAttribute('style', 'width:640px;background-color:#0C0C0D;display:table');
     elem.insertBefore(group, elem.firstChild);
     var divX = document.createElement('div');
-    divX.innerHTML = '✖';
+    divX.textContent = '✖';
     divX.setAttribute('id', 'diegodivX');
     divX.setAttribute('style', 'margin:0px 10px;cursor:pointer;color:#F0F0F0;display:inline;vertical-align:top;');
     group.appendChild(divX);
     divX.addEventListener('click', Close, false);
     var divP = document.createElement('div');
-    divP.innerHTML = '⮫';
+    divP.textContent = '⮫';
     divP.setAttribute('id', 'diegodivPlus');
     divP.setAttribute('style', 'margin:0px 10px;cursor:pointer;color:#F0F0F0;display:inline;vertical-align:top;');
     group.appendChild(divP);
