@@ -9,6 +9,10 @@
 | `pnpm run lint` | ESLint |
 | `pnpm run format` | Prettier --write |
 | `pnpm run dev` | Serve `docs/` locally via `npx serve` |
+| `pnpm run purge-cdn` | Purge all files under jsDelivr CDN for `main` branch |
+| `pnpm run purge-cdn -- yt-auto-playlist` | Purge just `yt-auto-playlist/index.js` on CDN |
+| | **Note:** Purge completes in seconds at jsDelivr, but edge propagation (CF + FY) takes 1–5 min. |
+| `pnpm run purge-cdn -- purge` | Purge and verify: purge, wait 5s, then check CDN hash against manifest |
 
 ## Critical rules
 
