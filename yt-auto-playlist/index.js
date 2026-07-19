@@ -86,7 +86,7 @@ javascript:(function(){
                 playerVars: {
                     'autoplay': 1,
                     'controls': 1,
-                    'playlist': ids.slice(1).join()
+                    'playlist': ids.slice(1, 40).join()
                 }
             });
         };
@@ -217,6 +217,10 @@ function onError(event) {
                 break;
             case '150':
                 console.log('video (' + idFromVideo() + ') wont play in embbeded players (duplicate)');
+                badVideo();
+                break;
+            case '152':
+                console.log('video wont play in embbeded players (152)');
                 badVideo();
                 break;
             default:
