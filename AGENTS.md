@@ -12,6 +12,7 @@
 | `pnpm run purge-cdn` | Purge all files under jsDelivr CDN for `main` branch |
 | `pnpm run purge-cdn -- yt-auto-playlist` | Purge just `yt-auto-playlist/index.js` on CDN |
 | | **Note:** Purge completes in seconds at jsDelivr, but edge propagation (CF + FY) takes 1–5 min. |
+| `pnpm run build -- yt-auto-playlist` | Build bookmarklet as single line, ready to copy into URL bar |
 
 ## Critical rules
 
