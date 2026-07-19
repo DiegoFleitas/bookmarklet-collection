@@ -23,6 +23,27 @@
 - **Node ≥ 24** (see `.nvmrc`).
 - The live page fetches from `cdn.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main` — only `main` branch is served. Purge CDN cache at https://www.jsdelivr.com/tools/purge if stale.
 
+## Writing bookmarklet JS
+
+- **Never use `//` line comments.** `scripts/build.js` collapses all whitespace, so a `//` comment comments out the rest of the file and silently yields a broken bookmarklet. Use `/* */`. The build now parses its own output and fails loudly, but the comment still won't survive.
+- **Assume a hostile CSP.** Bookmarklets execute in the host page's context, and hardened sites (YouTube, GitHub) enforce `require-trusted-types-for 'script'`:
+  - Use `textContent`, never `innerHTML` — it's a Trusted Types sink. Reading `document.body.innerHTML` is fine; only writes are blocked.
+  - `script.src = '<string>'` is also blocked. Wrap it in a policy, with a fallback for browsers without Trusted Types:
+    `trustedTypes.createPolicy(name, { createScriptURL: s => s })`.
+  - An error thrown inside a `catch` block masks the original error. Guard cleanup (`if (el && el.parentNode)`).
+- Prefix injected element IDs and `@keyframes` names with the bookmarklet name — they share a namespace with the host page.
+- ES6 is fine (arrow functions, spread, template literals). Backticks survive the `encodeURIComponent` round-trip in `docs/index.html`.
+
+## Testing a change
+
+Three separate caches serve stale bookmarklet code. Defeat all of them, or you will debug code you are not running:
+
+1. **The saved bookmark** holds its own copy — re-drag it from the page after any change.
+2. **jsDelivr** — `pnpm run purge-cdn -- <name>`, then wait 1–5 min for edge propagation.
+3. **Browser HTTP cache** — `docs/index.html` self-heals by refetching with `cache: "reload"` when the hash mismatches; keep that retry.
+
+Fastest loop: `pnpm run build -- <name>`, paste into the page console. Bypasses all three.
+
 ## Architecture
 
 - Each bookmarklet is a root-level directory with `index.js` (+ optional `README.md`).
