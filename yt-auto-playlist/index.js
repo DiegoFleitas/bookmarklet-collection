@@ -77,6 +77,7 @@ javascript:(function(){
             player = new YT.Player('ytAutoPlplayer', {
                 height: '360',
                 width: '640',
+                videoId: ids[0],
                 events: {
                     'onReady': onPlayerReady,
                     'onStateChange': onPlayerStateChange,
@@ -85,7 +86,7 @@ javascript:(function(){
                 playerVars: {
                     'autoplay': 1,
                     'controls': 1,
-                    'playlist': [src]
+                    'playlist': ids.slice(1).join()
                 }
             });
         };
