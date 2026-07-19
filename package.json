@@ -8,7 +8,8 @@
     "verify-integrity": "node scripts/verify-integrity.js",
     "lint": "npx eslint .",
     "format": "npx prettier . --write",
-    "dev": "npx serve docs"
+    "dev": "npx serve docs",
+    "purge-cdn": "node scripts/purge-cdn.js"
   },
   "engines": {
     "node": ">=24"
