@@ -174,7 +174,9 @@
         // Manifest is expected to live alongside this HTML file.
         // If the file is opened via file:// or moved to a different directory,
         // this relative path may need to be updated.
-        const res = await fetch("./bookmarklet-integrity.json");
+        // Date.now() busts the Pages/browser manifest cache (max-age=600); a stale
+        // manifest makes the purge button unable to self-heal after a CDN refresh.
+        const res = await fetch("./bookmarklet-integrity.json?v=" + Date.now(), { cache: "no-store" });
         if (!res.ok) throw new Error(`Could not load bookmarklet list (HTTP ${res.status})`);
         const manifest = await res.json();
         const names = Object.keys(manifest).sort();
