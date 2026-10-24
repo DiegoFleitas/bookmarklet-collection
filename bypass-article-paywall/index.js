@@ -1,1 +1,1 @@
-javascript:window.location.href=`https://1ft.io/proxy?q=${encodeURIComponent(window.location.href)}`;
+javascript:(async()=>{const u=location.href.split('#')[0];let s;try{s=(await(await fetch('https://archive.org/wayback/available?url='+encodeURIComponent(u))).json()).archived_snapshots.closest}catch(e){}open(s?s.url:'https://web.archive.org/save/'+u,'_blank')})()
