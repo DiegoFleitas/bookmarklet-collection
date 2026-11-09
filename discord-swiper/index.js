@@ -3,13 +3,20 @@ javascript: (function () {
      * - This script was tested on the web client.
      * - Developer Mode MUST be enabled on the web client for the script to work.
      * https://discord.com/developers/docs/game-sdk/store#application-test-mode
-     * - The Authorization header MUST be set with a valid value at L#130
-     * you can copy the Authorization header from any request done to the discord.com/api endpoint by the client itself
+     * - The Authorization header is asked for on every run and is never
+     * stored in the bookmark URL: copy it from any request the client itself
+     * makes to the discord.com/api endpoint (DevTools, Network tab).
      */
     try {
         /* the script talks to discord.com/api with the user's own session, so refuse any other origin */
         if (location.hostname !== "discord.com" && location.hostname !== "canary.discord.com") {
             alert("This bookmarklet only runs on discord.com.");
+            return;
+        }
+        /* prompted once per run: a token stored in the bookmark URL leaks through sync, profiles and extensions */
+        var discordToken = (window.prompt("Discord Authorization header (kept for this run only):") || "").trim();
+        if (!discordToken) {
+            console.log("no token supplied");
             return;
         }
         // attempt to mitigate sending too many sentry events to discord lol
@@ -140,8 +147,8 @@ javascript: (function () {
             xhr.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0");
             xhr.setRequestHeader("Accept", "*/*");
             xhr.setRequestHeader("Accept-Language", "es-ES");
-            // TODO: set header with your own account value (or any request will always return HTTP code 401)
-            xhr.setRequestHeader("Authorization", "<REPLACE>");
+            /* token comes from the prompt at the top of the script, never from a literal */
+            xhr.setRequestHeader("Authorization", discordToken);
             // xhr.setRequestHeader("X-Super-Properties", "<super-props>");
             xhr.setRequestHeader("Connection", "keep-alive");
             // xhr.setRequestHeader("Cookie", "<cookie>");
