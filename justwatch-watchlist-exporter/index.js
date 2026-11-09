@@ -250,6 +250,13 @@ javascript: (async function () {
         return output;
     }
 
+    function csvCell(value) {
+        let s = value === null || value === undefined ? "" : String(value);
+        if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; /* neutralise formula introducers first */
+        if (/[",\r\n]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"'; /* rfc 4180 */
+        return s;
+    }
+
     function jsonToCsv(jsonData) {
         const csvRows = [];
 
@@ -281,8 +288,7 @@ javascript: (async function () {
                         value = row[header] || ''; /* For headers that directly match JSON keys */
                 }
 
-                const escapedCell = ('' + value).replace(/"/g, '\\"'); /* Escape double quotes */
-                return `"${escapedCell}"`;
+                return csvCell(value);
             });
 
             csvRows.push(csvRow.join(','));
