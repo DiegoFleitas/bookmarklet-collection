@@ -1,0 +1,8 @@
+# Generated files: hash manifest is written by scripts/update-integrity.js, lockfile by pnpm.
+pnpm-lock.yaml
+docs/bookmarklet-integrity.json
+
+# Agent scratch and tool output.
+.hermes/
+node_modules/
+lychee/
