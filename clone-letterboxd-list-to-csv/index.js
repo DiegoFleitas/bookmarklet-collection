@@ -5,6 +5,12 @@ javascript:(function(){
     const titleXPath = './/span[@class="frame-title"]/text()';
     const posterContainersNodeSet = document.evaluate(posterContainersXPath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
   
+    function csvCell(value) {
+        let s = value === null || value === undefined ? "" : String(value);
+        if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; /* neutralise formula introducers first */
+        if (/[",\r\n]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"'; /* rfc 4180 */
+        return s;
+    }
     let csvData = 'LetterboxdURI,tmdbID,imdbID,Title';
   
     for (let i = 0; i < posterContainersNodeSet.snapshotLength; i++) {
@@ -13,7 +19,7 @@ javascript:(function(){
       const uriNode = document.evaluate(uriXPath, posterContainerNode, null, XPathResult.STRING_TYPE, null);
       const titleNode = document.evaluate(titleXPath, posterContainerNode, null, XPathResult.STRING_TYPE, null);
   
-      csvData += `\nhttps://letterboxd.com${uriNode.stringValue},,"${titleNode.stringValue}"`;
+      csvData += "\n" + ["https://letterboxd.com" + uriNode.stringValue, "", "", csvCell(titleNode.stringValue)].join(",");
     }
   
 
