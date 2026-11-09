@@ -7,6 +7,11 @@ javascript: (function () {
      * you can copy the Authorization header from any request done to the discord.com/api endpoint by the client itself
      */
     try {
+        /* the script talks to discord.com/api with the user's own session, so refuse any other origin */
+        if (location.hostname !== "discord.com" && location.hostname !== "canary.discord.com") {
+            alert("This bookmarklet only runs on discord.com.");
+            return;
+        }
         // attempt to mitigate sending too many sentry events to discord lol
         const proxy = () => console.log(arguments)
         if (window.DiscordSentry) window.DiscordSentry = {Severity: proxy, withScope: proxy, captureException: proxy, captureMessage: proxy, addBreadcrumb: proxy};
