@@ -31,7 +31,8 @@ const manifest = {};
 
 for (const dir of dirs) {
   const indexPath = path.join(REPO_ROOT, dir, "index.js");
-  const content = fs.readFileSync(indexPath, "utf8");
+  // Hash the LF form so a CRLF working tree (core.autocrlf=true) produces the same manifest as CI.
+  const content = fs.readFileSync(indexPath, "utf8").replace(/\r\n/g, "\n");
   manifest[dir] = "sha384-" + sha384Base64(content);
 }
 

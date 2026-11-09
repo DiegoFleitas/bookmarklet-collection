@@ -53,7 +53,8 @@ for (const dir of dirs) {
     continue;
   }
   const indexPath = path.join(REPO_ROOT, dir, "index.js");
-  const content = fs.readFileSync(indexPath, "utf8");
+  // Hash the LF form so a CRLF working tree (core.autocrlf=true) matches what jsDelivr serves.
+  const content = fs.readFileSync(indexPath, "utf8").replace(/\r\n/g, "\n");
   const actual = "sha384-" + sha384Base64(content);
   if (actual !== expected) {
     console.error(`Integrity mismatch for ${dir}: expected ${expected}, got ${actual}. Run scripts/update-integrity.js`);
