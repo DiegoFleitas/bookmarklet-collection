@@ -4,15 +4,15 @@ Scrapes your JustWatch watchlist using GraphQL and downloads the data as a SIMKL
 
 ## Exported fields
 
-| Field | Source |
-| --- | --- |
-| English title | JustWatch API |
-| Original title | JustWatch API |
-| IMDb ID | JustWatch API |
-| Release year | JustWatch API |
-| Release date | JustWatch API |
-| Runtime | JustWatch API |
-| Age certification | JustWatch API |
+| Field                   | Source        |
+| ----------------------- | ------------- |
+| English title           | JustWatch API |
+| Original title          | JustWatch API |
+| IMDb ID                 | JustWatch API |
+| Release year            | JustWatch API |
+| Release date            | JustWatch API |
+| Runtime                 | JustWatch API |
+| Age certification       | JustWatch API |
 | Media type (movie/show) | JustWatch API |
 
 Raw scraped data is also stored in `localStorage` under the key `watchlistData` for further inspection.

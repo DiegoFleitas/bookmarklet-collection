@@ -1,1 +1,12 @@
-javascript:(function(){var longid=prompt("longid","76561198065246891");if(!longid||!/^\d{17}$/.test(longid))return;var xpath='//a[contains(@href, "'+longid+'")]/ancestor::tr/preceding-sibling::tr[@class="tbl_out"][1]';var test=document.evaluate(xpath,document,null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null).snapshotItem(0);if(test)test.click();})()
+javascript: (function () {
+  var longid = prompt("longid", "76561198065246891");
+  if (!longid || !/^\d{17}$/.test(longid)) return;
+  var xpath =
+    '//a[contains(@href, "' +
+    longid +
+    '")]/ancestor::tr/preceding-sibling::tr[@class="tbl_out"][1]';
+  var test = document
+    .evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null)
+    .snapshotItem(0);
+  if (test) test.click();
+})();

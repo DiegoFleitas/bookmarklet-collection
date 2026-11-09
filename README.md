@@ -8,23 +8,23 @@ A small collection of JavaScript bookmarklets for everyday browser tasks. Most a
 
 ## Bookmarklets
 
-| Bookmarklet | Description |
-| --- | --- |
-| [Add TMDb film to Letterboxd](add-tmdb-film-to-letterboxd/) | Opens the Letterboxd entry for a TMDb movie page in a new tab |
-| [Bypass article paywall](bypass-article-paywall/) | Sends the current URL through 1ft.io to attempt paywall bypass |
-| [Clone Letterboxd list to CSV](clone-letterboxd-list-to-csv/) | Downloads movie titles and URLs from a Letterboxd list page as CSV |
-| [Discord everyone tagger](discord-everyone-tagger/) | Collects visible member usernames and formats them as @mentions |
-| [Discord swiper](discord-swiper/) | Collects rich member profile data from a Discord server (requires auth token) |
-| [DOM change debugger](dom-change-debugger/) | Injects a `Spy` helper that pauses JS execution when a watched DOM element changes |
-| [Find SourceBan](find-sourceban/) | Finds a player's ban entry on a SourceBans++ list by SteamID64 |
-| [Form Filler](form-filler/) | Saves a form's field values into a new bookmarklet that refills them automatically |
-| [JustWatch watchlist exporter](justwatch-watchlist-exporter/) | Exports your JustWatch watchlist to a SIMKL-compatible CSV |
-| [Parse SourceBans](parse-sourcebans/) | Extracts all Steam profile URLs from a SourceBans++ ban list page |
-| [Quick open SteamID UK](quick-open-steamiduk/) | Speeds up SteamID UK indexing by briefly opening each found profile in a new tab |
-| [Steam group snooper](steam-group-snooper/) | Extracts member profile URLs from a Steam group's Members tab (legacy layout) |
-| [Virtual scrollwheel](virtual-scrollwheel/) | Injects fixed scroll buttons (up / rest / down) on any long webpage |
-| [YouTube auto‑playlist](yt-auto-playlist/) | Builds and plays an in-page playlist from YouTube videos found on the current page |
-| [YouTube Wayback Machine](yt-waybackmachine/) | Opens a YouTube video in the Wayback Machine's 2013 archived snapshot |
+| Bookmarklet                                                   | Description                                                                        |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [Add TMDb film to Letterboxd](add-tmdb-film-to-letterboxd/)   | Opens the Letterboxd entry for a TMDb movie page in a new tab                      |
+| [Bypass article paywall](bypass-article-paywall/)             | Sends the current URL through 1ft.io to attempt paywall bypass                     |
+| [Clone Letterboxd list to CSV](clone-letterboxd-list-to-csv/) | Downloads movie titles and URLs from a Letterboxd list page as CSV                 |
+| [Discord everyone tagger](discord-everyone-tagger/)           | Collects visible member usernames and formats them as @mentions                    |
+| [Discord swiper](discord-swiper/)                             | Collects rich member profile data from a Discord server (requires auth token)      |
+| [DOM change debugger](dom-change-debugger/)                   | Injects a `Spy` helper that pauses JS execution when a watched DOM element changes |
+| [Find SourceBan](find-sourceban/)                             | Finds a player's ban entry on a SourceBans++ list by SteamID64                     |
+| [Form Filler](form-filler/)                                   | Saves a form's field values into a new bookmarklet that refills them automatically |
+| [JustWatch watchlist exporter](justwatch-watchlist-exporter/) | Exports your JustWatch watchlist to a SIMKL-compatible CSV                         |
+| [Parse SourceBans](parse-sourcebans/)                         | Extracts all Steam profile URLs from a SourceBans++ ban list page                  |
+| [Quick open SteamID UK](quick-open-steamiduk/)                | Speeds up SteamID UK indexing by briefly opening each found profile in a new tab   |
+| [Steam group snooper](steam-group-snooper/)                   | Extracts member profile URLs from a Steam group's Members tab (legacy layout)      |
+| [Virtual scrollwheel](virtual-scrollwheel/)                   | Injects fixed scroll buttons (up / rest / down) on any long webpage                |
+| [YouTube auto‑playlist](yt-auto-playlist/)                    | Builds and plays an in-page playlist from YouTube videos found on the current page |
+| [YouTube Wayback Machine](yt-waybackmachine/)                 | Opens a YouTube video in the Wayback Machine's 2013 archived snapshot              |
 
 ## How it works
 

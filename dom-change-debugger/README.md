@@ -8,7 +8,7 @@ Injects a `Spy` helper object that uses a `MutationObserver` to watch a chosen e
 2. In DevTools, select the element of interest in the **Elements** panel.
 3. In the **Console**, run:
    ```js
-   Spy.observe($0)
+   Spy.observe($0);
    ```
 4. Interact with the page. When the element changes, execution pauses and a stack trace appears.
 

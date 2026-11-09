@@ -39,5 +39,5 @@ jobs:
       - name: Check links
         uses: lycheeverse/lychee-action@7cd0af4c74a61395d455af97419279d86aafaede # v2.0.2
         with:
-          args: 'README.md docs/index.html --no-progress --timeout 10 --exclude https://fonts.googleapis.com/ --exclude https://fonts.gstatic.com/ --exclude https://purge.jsdelivr.net/'
+          args: "README.md docs/index.html --no-progress --timeout 10 --exclude https://fonts.googleapis.com/ --exclude https://fonts.gstatic.com/ --exclude https://purge.jsdelivr.net/"
           fail: true

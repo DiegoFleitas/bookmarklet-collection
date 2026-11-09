@@ -11,6 +11,7 @@ Collects rich profile data for members of a Discord server directly from the Dis
 
 > [!IMPORTANT]
 > Before running this bookmarklet:
+>
 > 1. Enable **Developer Mode** in Discord (`User Settings → Advanced → Developer Mode`).
 > 2. Capture a valid `Authorization` header from any request to `https://discord.com/api` (e.g. via DevTools → Network).
 > 3. Click the bookmarklet on the Discord web client and paste that header value into the prompt. It is used for that run only and is never stored in the bookmark.

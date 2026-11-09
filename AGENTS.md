@@ -2,17 +2,17 @@
 
 ## Commands (use `pnpm`, not `npm`)
 
-| Command | Purpose |
-|---------|---------|
-| `pnpm run update-integrity` | Regenerate `docs/bookmarklet-integrity.json` after editing any `index.js` |
-| `pnpm run verify-integrity` | Verify manifest matches all `index.js` files (CI runs this) |
-| `pnpm run lint` | ESLint |
-| `pnpm run format` | Prettier --write |
-| `pnpm run dev` | Serve `docs/` locally via `npx serve` |
-| `pnpm run purge-cdn` | Purge all files under jsDelivr CDN for `main` branch |
-| `pnpm run purge-cdn -- yt-auto-playlist` | Purge just `yt-auto-playlist/index.js` on CDN |
-| | **Note:** Purge completes in seconds at jsDelivr, but edge propagation (CF + FY) takes 1–5 min. |
-| `pnpm run build -- yt-auto-playlist` | Build bookmarklet as single line, ready to copy into URL bar |
+| Command                                  | Purpose                                                                                         |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `pnpm run update-integrity`              | Regenerate `docs/bookmarklet-integrity.json` after editing any `index.js`                       |
+| `pnpm run verify-integrity`              | Verify manifest matches all `index.js` files (CI runs this)                                     |
+| `pnpm run lint`                          | ESLint                                                                                          |
+| `pnpm run format`                        | Prettier --write                                                                                |
+| `pnpm run dev`                           | Serve `docs/` locally via `npx serve`                                                           |
+| `pnpm run purge-cdn`                     | Purge all files under jsDelivr CDN for `main` branch                                            |
+| `pnpm run purge-cdn -- yt-auto-playlist` | Purge just `yt-auto-playlist/index.js` on CDN                                                   |
+|                                          | **Note:** Purge completes in seconds at jsDelivr, but edge propagation (CF + FY) takes 1–5 min. |
+| `pnpm run build -- yt-auto-playlist`     | Build bookmarklet as single line, ready to copy into URL bar                                    |
 
 ## Critical rules
 
@@ -39,7 +39,7 @@
 Three separate caches serve stale bookmarklet code. Defeat all of them, or you will debug code you are not running:
 
 1. **The saved bookmark** holds its own copy — re-drag it from the page after any change.
-2. **jsDelivr** — `pnpm run purge-cdn -- <name>` purges, then polls until the CDN hash matches the manifest. Repeated purges of the same path get throttled for ~30 min while *still* reporting `status: finished`, so a purge can be a silent no-op; the script detects this and tells you the reset time instead of polling pointlessly.
+2. **jsDelivr** — `pnpm run purge-cdn -- <name>` purges, then polls until the CDN hash matches the manifest. Repeated purges of the same path get throttled for ~30 min while _still_ reporting `status: finished`, so a purge can be a silent no-op; the script detects this and tells you the reset time instead of polling pointlessly.
 3. **Browser HTTP cache** — `docs/index.html` self-heals by refetching with `cache: "reload"` when the hash mismatches; keep that retry.
 
 Fastest loop: `pnpm run build -- <name>`, paste into the page console. Bypasses all three.

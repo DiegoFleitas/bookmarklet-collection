@@ -57,7 +57,9 @@ for (const dir of dirs) {
   const content = fs.readFileSync(indexPath, "utf8").replace(/\r\n/g, "\n");
   const actual = "sha384-" + sha384Base64(content);
   if (actual !== expected) {
-    console.error(`Integrity mismatch for ${dir}: expected ${expected}, got ${actual}. Run scripts/update-integrity.js`);
+    console.error(
+      `Integrity mismatch for ${dir}: expected ${expected}, got ${actual}. Run scripts/update-integrity.js`
+    );
     failed = true;
   }
 }
@@ -65,7 +67,9 @@ for (const dir of dirs) {
 const manifestDirs = Object.keys(manifest).sort();
 for (const dir of manifestDirs) {
   if (!dirsSet.has(dir)) {
-    console.error(`Manifest has extra entry for missing dir: ${dir}. Run scripts/update-integrity.js`);
+    console.error(
+      `Manifest has extra entry for missing dir: ${dir}. Run scripts/update-integrity.js`
+    );
     failed = true;
   }
 }

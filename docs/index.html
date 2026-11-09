@@ -1,197 +1,216 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://purge.jsdelivr.net; img-src 'self' data:;"
+    />
+    <title>Bookmarklet Collection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Orbitron:wght@700&display=swap"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./favicon_io/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon_io/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon_io/favicon-16x16.png" />
+    <link rel="shortcut icon" href="./favicon_io/favicon.ico" />
+    <link rel="manifest" href="./favicon_io/site.webmanifest" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://purge.jsdelivr.net; img-src 'self' data:;">
-  <title>Bookmarklet Collection</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet" crossorigin="anonymous">
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="apple-touch-icon" sizes="180x180" href="./favicon_io/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="./favicon_io/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="./favicon_io/favicon-16x16.png" />
-  <link rel="shortcut icon" href="./favicon_io/favicon.ico" />
-  <link rel="manifest" href="./favicon_io/site.webmanifest" />
-</head>
-
-<body>
-  <a
-    class="github-icon-link"
-    href="https://github.com/DiegoFleitas/bookmarklet-collection"
-    target="_blank"
-    rel="noreferrer"
-    aria-label="View this project on GitHub"
-  >
-    <svg viewBox="0 0 16 16" aria-hidden="true">
-      <path
-        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+  <body>
+    <a
+      class="github-icon-link"
+      href="https://github.com/DiegoFleitas/bookmarklet-collection"
+      target="_blank"
+      rel="noreferrer"
+      aria-label="View this project on GitHub"
+    >
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
         0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52
         -.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95
         0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2
         .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15
         0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2
         0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"
-      />
-    </svg>
-  </a>
-  <div class="retro-bg">
-    <div class="grid-overlay"></div>
-    <div class="page-shell">
-      <header class="page-header neon-glow">
-        <h1 class="page-title">Diego's <span class="neon-accent">Bookmarklet</span> Collection</h1>
-        <p class="page-subtitle">Drag any bookmarklet to your bookmarks bar, then click it on any page to run the code.</p>
-      </header>
-      <main class="page-main animated-reveal">
-        <div id="error-message" role="alert"></div>
-        <ul id="bookmarklet-list" class="bookmarklet-list"></ul>
-      </main>
-  </div>
-</div>
+        />
+      </svg>
+    </a>
+    <div class="retro-bg">
+      <div class="grid-overlay"></div>
+      <div class="page-shell">
+        <header class="page-header neon-glow">
+          <h1 class="page-title">
+            Diego's <span class="neon-accent">Bookmarklet</span> Collection
+          </h1>
+          <p class="page-subtitle">
+            Drag any bookmarklet to your bookmarks bar, then click it on any page to run the code.
+          </p>
+        </header>
+        <main class="page-main animated-reveal">
+          <div id="error-message" role="alert"></div>
+          <ul id="bookmarklet-list" class="bookmarklet-list"></ul>
+        </main>
+      </div>
+    </div>
 
-  <script>
-    // Animate page load with staggered reveals
-    window.addEventListener('DOMContentLoaded', () => {
-      document.querySelector('.animated-reveal').classList.add('show');
-      if (new URLSearchParams(location.search).has("purged")) {
-        history.replaceState(null, "", location.pathname);
-        const notice = Object.assign(document.createElement("p"), {
-          className: "purge-notice",
-          textContent: "CDN cache purge requested — propagation may take a few minutes. If errors persist, purge again."
-        });
-        document.querySelector(".page-header").appendChild(notice);
-      }
-    });
-    const CDN = "https://cdn.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main";
-    const listEl = document.getElementById("bookmarklet-list");
-    const errorEl = document.getElementById("error-message");
-
-    function showError(msg) {
-      errorEl.textContent = msg;
-      errorEl.style.display = "block";
-    }
-
-    function isJs(code) {
-      if (!code || !code.trim()) return false;
-      const t = code.trim();
-      if (t.startsWith("<!") || t.startsWith("<html") || code.includes("<title>404")) return false;
-      return true;
-    }
-
-    async function sha384(text) {
-      const data = new TextEncoder().encode(text);
-      const hash = await crypto.subtle.digest("SHA-384", data);
-      return "sha384-" + btoa(String.fromCharCode(...new Uint8Array(hash)));
-    }
-
-    // Fetch the file and return its code only if the SHA-384 matches; else null.
-    async function verifyFetch(url, expectedHash, opts) {
-      const res = await fetch(url, opts);
-      if (!res.ok) throw new Error(res.status + " " + res.statusText);
-      const code = await res.text();
-      if (!isJs(code)) throw new Error("Invalid response");
-      return (await sha384(code)) === expectedHash ? code : null;
-    }
-
-    async function loadOne(name, expectedHash) {
-      const url = `${CDN}/${name}/index.js`;
-      const displayName = name.replace(/-/g, " ");
-      const readmeUrl = `https://github.com/DiegoFleitas/bookmarklet-collection/blob/main/${name}/README.md`;
-      try {
-        // Verify the browser-cached copy first; if its hash is stale, retry once
-        // bypassing the HTTP cache so the page self-heals without a hard refresh.
-        let code = await verifyFetch(url, expectedHash);
-        if (code === null) code = await verifyFetch(url, expectedHash, { cache: "reload" });
-        if (code === null) {
-          // Even a revalidated fetch mismatches → the CDN itself is stale.
-          const errLi = document.createElement("li");
-          errLi.className = "bookmarklet-item error-item";
-          const purgeBtn = document.createElement("button");
-          purgeBtn.className = "purge-btn";
-          purgeBtn.textContent = "purge CDN cache";
-          purgeBtn.onclick = async () => {
-            purgeBtn.disabled = true;
-            purgeBtn.textContent = "purging…";
-            try {
-              const purgeUrl = `https://purge.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main/${name}/index.js`;
-              const r = await fetch(purgeUrl);
-              if (!r.ok) throw new Error(r.status);
-              purgeBtn.textContent = "purged — reloading…";
-              setTimeout(() => location.assign(location.pathname + "?purged=1"), 3500);
-            } catch {
-              purgeBtn.textContent = "purge failed — try again";
-              purgeBtn.disabled = false;
-            }
-          };
-          errLi.append(`${displayName} — integrity check failed — CDN cache may be stale (`, purgeBtn, ")");
-          listEl.appendChild(errLi);
-          return;
-        }
-        const li = document.createElement("li");
-        li.className = "bookmarklet-item";
-        const a = document.createElement("a");
-        a.className = "bookmarklet-link";
-        a.href = "javascript:" + encodeURIComponent(code.trim().replace(/^javascript:/, ""));
-        a.textContent = displayName;
-        a.setAttribute("draggable", "true");
-        a.onclick = (e) => {
-          e.preventDefault();
-          if (li.querySelector(".drag-hint")) return false;
-          const hint = Object.assign(document.createElement("span"), {
-            className: "drag-hint",
-            textContent: "↖ drag to your bookmarks bar"
+    <script>
+      // Animate page load with staggered reveals
+      window.addEventListener("DOMContentLoaded", () => {
+        document.querySelector(".animated-reveal").classList.add("show");
+        if (new URLSearchParams(location.search).has("purged")) {
+          history.replaceState(null, "", location.pathname);
+          const notice = Object.assign(document.createElement("p"), {
+            className: "purge-notice",
+            textContent:
+              "CDN cache purge requested — propagation may take a few minutes. If errors persist, purge again.",
           });
-          li.appendChild(hint);
-          hint.addEventListener("animationend", () => hint.remove());
-          return false;
-        };
-        // Drag event: set bookmarklet code as text/plain for bookmarks bar
-        a.addEventListener("dragstart", (e) => {
-          e.dataTransfer.setData("text/plain", a.href);
-          e.dataTransfer.effectAllowed = "copyLink";
-        });
-        li.appendChild(a);
-        // Add README link for all bookmarklets (README files are optional).
-        const readme = document.createElement("a");
-        readme.href = readmeUrl;
-        readme.className = "bookmarklet-readme";
-        readme.textContent = "README";
-        readme.target = "_blank";
-        li.appendChild(readme);
-        listEl.appendChild(li);
-      } catch (err) {
-        listEl.appendChild(Object.assign(document.createElement("li"), {
-          className: "bookmarklet-item error-item",
-          textContent: `⚠ ${displayName} — ${err.message}`
-        }));
-      }
-    }
+          document.querySelector(".page-header").appendChild(notice);
+        }
+      });
+      const CDN = "https://cdn.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main";
+      const listEl = document.getElementById("bookmarklet-list");
+      const errorEl = document.getElementById("error-message");
 
-    (async function () {
-      try {
-        // Manifest is expected to live alongside this HTML file.
-        // If the file is opened via file:// or moved to a different directory,
-        // this relative path may need to be updated.
-        // Date.now() busts the Pages/browser manifest cache (max-age=600); a stale
-        // manifest makes the purge button unable to self-heal after a CDN refresh.
-        const res = await fetch("./bookmarklet-integrity.json?v=" + Date.now(), { cache: "no-store" });
-        if (!res.ok) throw new Error(`Could not load bookmarklet list (HTTP ${res.status})`);
-        const manifest = await res.json();
-        const names = Object.keys(manifest).sort();
-        if (!names.length) throw new Error("No bookmarklets in list");
-        const loadPromises = names.map(name => loadOne(name, manifest[name]));
-        await Promise.allSettled(loadPromises);
-      } catch (err) {
-        if (err instanceof SyntaxError) {
-          showError("Could not parse bookmarklet list (invalid JSON)");
-        } else {
-          showError(err.message);
+      function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.style.display = "block";
+      }
+
+      function isJs(code) {
+        if (!code || !code.trim()) return false;
+        const t = code.trim();
+        if (t.startsWith("<!") || t.startsWith("<html") || code.includes("<title>404"))
+          return false;
+        return true;
+      }
+
+      async function sha384(text) {
+        const data = new TextEncoder().encode(text);
+        const hash = await crypto.subtle.digest("SHA-384", data);
+        return "sha384-" + btoa(String.fromCharCode(...new Uint8Array(hash)));
+      }
+
+      // Fetch the file and return its code only if the SHA-384 matches; else null.
+      async function verifyFetch(url, expectedHash, opts) {
+        const res = await fetch(url, opts);
+        if (!res.ok) throw new Error(res.status + " " + res.statusText);
+        const code = await res.text();
+        if (!isJs(code)) throw new Error("Invalid response");
+        return (await sha384(code)) === expectedHash ? code : null;
+      }
+
+      async function loadOne(name, expectedHash) {
+        const url = `${CDN}/${name}/index.js`;
+        const displayName = name.replace(/-/g, " ");
+        const readmeUrl = `https://github.com/DiegoFleitas/bookmarklet-collection/blob/main/${name}/README.md`;
+        try {
+          // Verify the browser-cached copy first; if its hash is stale, retry once
+          // bypassing the HTTP cache so the page self-heals without a hard refresh.
+          let code = await verifyFetch(url, expectedHash);
+          if (code === null) code = await verifyFetch(url, expectedHash, { cache: "reload" });
+          if (code === null) {
+            // Even a revalidated fetch mismatches → the CDN itself is stale.
+            const errLi = document.createElement("li");
+            errLi.className = "bookmarklet-item error-item";
+            const purgeBtn = document.createElement("button");
+            purgeBtn.className = "purge-btn";
+            purgeBtn.textContent = "purge CDN cache";
+            purgeBtn.onclick = async () => {
+              purgeBtn.disabled = true;
+              purgeBtn.textContent = "purging…";
+              try {
+                const purgeUrl = `https://purge.jsdelivr.net/gh/DiegoFleitas/bookmarklet-collection@main/${name}/index.js`;
+                const r = await fetch(purgeUrl);
+                if (!r.ok) throw new Error(r.status);
+                purgeBtn.textContent = "purged — reloading…";
+                setTimeout(() => location.assign(location.pathname + "?purged=1"), 3500);
+              } catch {
+                purgeBtn.textContent = "purge failed — try again";
+                purgeBtn.disabled = false;
+              }
+            };
+            errLi.append(
+              `${displayName} — integrity check failed — CDN cache may be stale (`,
+              purgeBtn,
+              ")"
+            );
+            listEl.appendChild(errLi);
+            return;
+          }
+          const li = document.createElement("li");
+          li.className = "bookmarklet-item";
+          const a = document.createElement("a");
+          a.className = "bookmarklet-link";
+          a.href = "javascript:" + encodeURIComponent(code.trim().replace(/^javascript:/, ""));
+          a.textContent = displayName;
+          a.setAttribute("draggable", "true");
+          a.onclick = (e) => {
+            e.preventDefault();
+            if (li.querySelector(".drag-hint")) return false;
+            const hint = Object.assign(document.createElement("span"), {
+              className: "drag-hint",
+              textContent: "↖ drag to your bookmarks bar",
+            });
+            li.appendChild(hint);
+            hint.addEventListener("animationend", () => hint.remove());
+            return false;
+          };
+          // Drag event: set bookmarklet code as text/plain for bookmarks bar
+          a.addEventListener("dragstart", (e) => {
+            e.dataTransfer.setData("text/plain", a.href);
+            e.dataTransfer.effectAllowed = "copyLink";
+          });
+          li.appendChild(a);
+          // Add README link for all bookmarklets (README files are optional).
+          const readme = document.createElement("a");
+          readme.href = readmeUrl;
+          readme.className = "bookmarklet-readme";
+          readme.textContent = "README";
+          readme.target = "_blank";
+          li.appendChild(readme);
+          listEl.appendChild(li);
+        } catch (err) {
+          listEl.appendChild(
+            Object.assign(document.createElement("li"), {
+              className: "bookmarklet-item error-item",
+              textContent: `⚠ ${displayName} — ${err.message}`,
+            })
+          );
         }
       }
-    })();
-  </script>
-</body>
 
+      (async function () {
+        try {
+          // Manifest is expected to live alongside this HTML file.
+          // If the file is opened via file:// or moved to a different directory,
+          // this relative path may need to be updated.
+          // Date.now() busts the Pages/browser manifest cache (max-age=600); a stale
+          // manifest makes the purge button unable to self-heal after a CDN refresh.
+          const res = await fetch("./bookmarklet-integrity.json?v=" + Date.now(), {
+            cache: "no-store",
+          });
+          if (!res.ok) throw new Error(`Could not load bookmarklet list (HTTP ${res.status})`);
+          const manifest = await res.json();
+          const names = Object.keys(manifest).sort();
+          if (!names.length) throw new Error("No bookmarklets in list");
+          const loadPromises = names.map((name) => loadOne(name, manifest[name]));
+          await Promise.allSettled(loadPromises);
+        } catch (err) {
+          if (err instanceof SyntaxError) {
+            showError("Could not parse bookmarklet list (invalid JSON)");
+          } else {
+            showError(err.message);
+          }
+        }
+      })();
+    </script>
+  </body>
 </html>

@@ -1,4 +1,4 @@
-javascript:(() => {
+javascript: (() => {
   if (document.getElementById("formfiller")) return;
 
   const originalHost = window.location.host;
@@ -15,7 +15,13 @@ javascript:(() => {
   function isEligibleInput(el) {
     if (!(el instanceof HTMLInputElement)) return false;
     const type = (el.type || "").toLowerCase();
-    if (type === "hidden" || type === "submit" || type === "button" || type === "file" || type === "password") {
+    if (
+      type === "hidden" ||
+      type === "submit" ||
+      type === "button" ||
+      type === "file" ||
+      type === "password"
+    ) {
       return false;
     }
     return true;
@@ -153,7 +159,7 @@ javascript:(() => {
       nameInput,
       saveButton,
       infoPara,
-      close
+      close,
     };
   }
 
@@ -189,7 +195,7 @@ javascript:(() => {
             id,
             name,
             kind: "select-multiple",
-            values: selectedValues
+            values: selectedValues,
           });
           return;
         }
@@ -202,7 +208,7 @@ javascript:(() => {
               id,
               name,
               kind: t,
-              value: el.value
+              value: el.value,
             });
             return;
           }
@@ -215,7 +221,7 @@ javascript:(() => {
           id,
           name,
           kind: "value",
-          value
+          value,
         });
       });
     });
@@ -257,7 +263,9 @@ javascript:(() => {
           const valuesArray = "[" + field.values.map(jsString).join(",") + "]";
           if (field.id) {
             lines.push(
-              "var el=byId(" + jsString(field.id) + ");if(el){var vals=" +
+              "var el=byId(" +
+                jsString(field.id) +
+                ");if(el){var vals=" +
                 valuesArray +
                 ";for(var i=0;i<el.options.length;i++){var o=el.options[i];o.selected=vals.indexOf(o.value)!==-1;}change(el);}"
             );
@@ -277,9 +285,7 @@ javascript:(() => {
           selectorParts.push("[value=" + jsString(field.value).slice(1, -1) + "]");
           const selector = selectorParts.join("");
           lines.push(
-            "var el=d.querySelector(" +
-              jsString(selector) +
-              ");if(el){el.checked=true;change(el);}"
+            "var el=d.querySelector(" + jsString(selector) + ");if(el){el.checked=true;change(el);}"
           );
         } else if (field.kind === "value") {
           const v = jsString(field.value);
@@ -347,4 +353,4 @@ javascript:(() => {
     link.href = code;
     link.textContent = ui.nameInput.value || "My bookmarklet";
   });
-})(); 
+})();

@@ -1,316 +1,356 @@
-javascript:(function(){
+javascript: (function () {
   try {
-    var exists = document.getElementById('ytAutoPliframecontainer');
+    var exists = document.getElementById("ytAutoPliframecontainer");
     if (exists != null) {
-        var c = document.getElementById('ytAutoPliframecontainer');
-        c.hidden = false;
-        if (src != null) loadPlaylist(src);
-        console.log('already running');
+      var c = document.getElementById("ytAutoPliframecontainer");
+      c.hidden = false;
+      if (src != null) loadPlaylist(src);
+      console.log("already running");
     } else {
-        var loader = document.createElement('div');
-        loader.setAttribute('id', 'ytAutoPlloader');
-        loader.setAttribute('style', 'position:absolute;left:50%;top:50%;z-index:1;border:10px solid #f3f3f3;border-top:10px solid red;border-radius:50%;width:80px;height:80px;animation:ytAutoPlspin 1s linear infinite;');
-        var mystyle = document.createElement('style');
-        document.head.appendChild(mystyle);
-        mystyle.textContent = '@keyframes ytAutoPlspin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}';
-        document.body.appendChild(loader);
-        var last = '';
-        var done = false;
-        var skipped = [];
-        var uniq = [];
-        var hrefs = [];
-        var links = document.links;
-        for (var i = 0; i < links.length; i++) {
-            hrefs.push(links[i].href);
+      var loader = document.createElement("div");
+      loader.setAttribute("id", "ytAutoPlloader");
+      loader.setAttribute(
+        "style",
+        "position:absolute;left:50%;top:50%;z-index:1;border:10px solid #f3f3f3;border-top:10px solid red;border-radius:50%;width:80px;height:80px;animation:ytAutoPlspin 1s linear infinite;"
+      );
+      var mystyle = document.createElement("style");
+      document.head.appendChild(mystyle);
+      mystyle.textContent =
+        "@keyframes ytAutoPlspin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}";
+      document.body.appendChild(loader);
+      var last = "";
+      var done = false;
+      var skipped = [];
+      var uniq = [];
+      var hrefs = [];
+      var links = document.links;
+      for (var i = 0; i < links.length; i++) {
+        hrefs.push(links[i].href);
+      }
+      uniq = hrefs.reduce(function (a, b) {
+        if (a.indexOf(b) < 0) a.push(b);
+        return a;
+      }, []);
+      uniq = uniq.filter(function (url) {
+        return validateYouTubeUrl(url);
+      });
+
+      var ids = [];
+      var dictionary = {};
+      var regExpt = /t=(\w+)/;
+      for (var h = 0; h < uniq.length; h++) {
+        var str = uniq[h];
+        if (str.indexOf("v=") !== -1) {
+          var vid = str.substr(str.indexOf("v=") + 2, 11);
+          ids.push(vid);
+          if (str.indexOf("t=") !== -1) {
+            dictionary[vid] = str.match(regExpt)[0];
+          }
+        } else if (str.indexOf("youtu.be") !== -1) {
+          var vid = str.substr(str.indexOf("youtu.be/") + 9, 11);
+          ids.push(vid);
+          if (str.indexOf("t=") !== -1) {
+            dictionary[vid] = str.match(regExpt)[0];
+          }
         }
-        uniq = hrefs.reduce(function (a, b) {
-            if (a.indexOf(b) < 0) a.push(b);
-            return a;
-        }, []);
-        uniq = uniq.filter(function (url) {
-            return validateYouTubeUrl(url);
+      }
+
+      if (ids.length === 0) {
+        var regex =
+          /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/g;
+        var matches = [...document.body.innerHTML.matchAll(regex)];
+        ids = matches.map((match) => match[1]);
+      }
+
+      ids = [...new Set(ids)];
+
+      if (ids.length === 0) throw new Error("No videos found.");
+
+      let extraIds = ids.slice(40);
+      src = ids.join();
+      console.log(
+        `found ${ids.length} videos:`,
+        `https://www.youtube.com/watch_videos?video_ids=${src}`
+      );
+      if (extraIds.length) {
+        console.log(
+          "player only supports 40 videos at a time, heres a direct link to the rest",
+          `https://www.youtube.com/watch_videos?video_ids=${extraIds.join()}`
+        );
+      }
+      var count = ids.length;
+
+      var z = document.createElement("div");
+      z.setAttribute("id", "ytAutoPliframecontainer");
+      z.setAttribute("style", "min-width:100%;min-height:100%;position:fixed;left:25%;top:25%; ");
+      document.body.appendChild(z);
+      z.style.zIndex = 2147483646;
+      var y = document.createElement("div");
+      y.setAttribute("id", "ytAutoPlplayer");
+      z.appendChild(y);
+      var player;
+      window.onYouTubeIframeAPIReady = function () {
+        player = new YT.Player("ytAutoPlplayer", {
+          height: "360",
+          width: "640",
+          videoId: ids[0],
+          events: {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange,
+            onError: onError,
+          },
+          playerVars: {
+            autoplay: 1,
+            controls: 1,
+            playlist: ids.slice(1, 40).join(),
+          },
         });
-
-        var ids = [];
-        var dictionary = {};
-        var regExpt = /t=(\w+)/;
-        for (var h = 0; h < uniq.length; h++) {
-            var str = uniq[h];
-            if (str.indexOf('v=') !== -1) {
-                var vid = str.substr(str.indexOf('v=') + 2, 11);
-                ids.push(vid);
-                if (str.indexOf('t=') !== -1) {
-                    dictionary[vid] = str.match(regExpt)[0];
-                }
-            } else if (str.indexOf('youtu.be') !== -1) {
-                var vid = str.substr(str.indexOf('youtu.be/') + 9, 11);
-                ids.push(vid);
-                if (str.indexOf('t=') !== -1) {
-                    dictionary[vid] = str.match(regExpt)[0];
-                }
-            }
-        }
-
-        if (ids.length === 0) {
-            var regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/g;
-            var matches = [...document.body.innerHTML.matchAll(regex)];
-            ids = matches.map(match => match[1]);
-        }
-
-        ids = [...new Set(ids)];
-
-        if (ids.length === 0) throw new Error('No videos found.');
-
-        let extraIds = ids.slice(40);
-        src = ids.join();
-        console.log(`found ${ids.length} videos:`, `https://www.youtube.com/watch_videos?video_ids=${src}`);
-        if (extraIds.length) {
-            console.log('player only supports 40 videos at a time, heres a direct link to the rest', `https://www.youtube.com/watch_videos?video_ids=${extraIds.join()}`);
-        }
-        var count = ids.length;
-
-        var z = document.createElement('div');
-        z.setAttribute('id', 'ytAutoPliframecontainer');
-        z.setAttribute('style', 'min-width:100%;min-height:100%;position:fixed;left:25%;top:25%; ');
-        document.body.appendChild(z);
-        z.style.zIndex = 2147483646;
-        var y = document.createElement('div');
-        y.setAttribute('id', 'ytAutoPlplayer');
-        z.appendChild(y);
-        var player;
-        window.onYouTubeIframeAPIReady = function () {
-            player = new YT.Player('ytAutoPlplayer', {
-                height: '360',
-                width: '640',
-                videoId: ids[0],
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange,
-                    'onError': onError
-                },
-                playerVars: {
-                    'autoplay': 1,
-                    'controls': 1,
-                    'playlist': ids.slice(1, 40).join()
-                }
+      };
+      if (window.YT && window.YT.Player) {
+        window.onYouTubeIframeAPIReady();
+      } else {
+        var tag = document.createElement("script");
+        var apiUrl = "https://www.youtube.com/iframe_api";
+        var ttPolicy = null;
+        if (window.trustedTypes && window.trustedTypes.createPolicy) {
+          try {
+            ttPolicy = window.trustedTypes.createPolicy("ytAutoPl", {
+              createScriptURL: function (s) {
+                return s;
+              },
             });
-        };
-        if (window.YT && window.YT.Player) {
-            window.onYouTubeIframeAPIReady();
-        } else {
-            var tag = document.createElement('script');
-            var apiUrl = 'https://www.youtube.com/iframe_api';
-            var ttPolicy = null;
-            if (window.trustedTypes && window.trustedTypes.createPolicy) {
-                try {
-                    ttPolicy = window.trustedTypes.createPolicy('ytAutoPl', {
-                        createScriptURL: function (s) { return s; }
-                    });
-                } catch (e) { console.log('trusted types policy blocked', e); }
-            }
-            tag.src = ttPolicy ? ttPolicy.createScriptURL(apiUrl) : apiUrl;
-            var firstScriptTag = document.getElementsByTagName('script')[0];
-            if (firstScriptTag) {
-                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            } else {
-                document.head.appendChild(tag);
-            }
+          } catch (e) {
+            console.log("trusted types policy blocked", e);
+          }
         }
-        var iframe = document.getElementById('ytAutoPlplayer');
-        iframe.setAttribute('enablejsapi', '1');
+        tag.src = ttPolicy ? ttPolicy.createScriptURL(apiUrl) : apiUrl;
+        var firstScriptTag = document.getElementsByTagName("script")[0];
+        if (firstScriptTag) {
+          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        } else {
+          document.head.appendChild(tag);
+        }
+      }
+      var iframe = document.getElementById("ytAutoPlplayer");
+      iframe.setAttribute("enablejsapi", "1");
     }
-} catch (ex) {
-    if (typeof loader !== 'undefined' && loader && loader.parentNode) loader.parentNode.removeChild(loader);
+  } catch (ex) {
+    if (typeof loader !== "undefined" && loader && loader.parentNode)
+      loader.parentNode.removeChild(loader);
     console.log(ex);
-}
+  }
 
-function validateYouTubeUrl(url) {
-    if (url != undefined || url != '') {
-        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|watch\?v=|\&v=|\?v=)([^%#\&\?]*).*/;
-        var match = url.match(regExp);
-        if (match && match[2].length == 11) {
-            return true;
-        } else {
-            return false;
-        }
+  function validateYouTubeUrl(url) {
+    if (url != undefined || url != "") {
+      var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|watch\?v=|\&v=|\?v=)([^%#\&\?]*).*/;
+      var match = url.match(regExp);
+      if (match && match[2].length == 11) {
+        return true;
+      } else {
+        return false;
+      }
     }
-}
+  }
 
-function onPlayerReady(event) {
+  function onPlayerReady(event) {
     event.target.playVideo();
-    var elem = document.getElementById('ytAutoPliframecontainer');
-    var group = document.createElement('div');
-    group.setAttribute('id', 'ytAutoPldivgroup');
-    group.setAttribute('style', 'width:640px;background-color:#0C0C0D;display:table');
+    var elem = document.getElementById("ytAutoPliframecontainer");
+    var group = document.createElement("div");
+    group.setAttribute("id", "ytAutoPldivgroup");
+    group.setAttribute("style", "width:640px;background-color:#0C0C0D;display:table");
     elem.insertBefore(group, elem.firstChild);
-    var divX = document.createElement('div');
-    divX.textContent = '✖';
-    divX.setAttribute('id', 'ytAutoPldivX');
-    divX.setAttribute('style', 'margin:0px 10px;cursor:pointer;color:#F0F0F0;display:inline;vertical-align:top;');
+    var divX = document.createElement("div");
+    divX.textContent = "✖";
+    divX.setAttribute("id", "ytAutoPldivX");
+    divX.setAttribute(
+      "style",
+      "margin:0px 10px;cursor:pointer;color:#F0F0F0;display:inline;vertical-align:top;"
+    );
     group.appendChild(divX);
-    divX.addEventListener('click', Close, false);
-    var divP = document.createElement('div');
-    divP.textContent = '⮫';
-    divP.setAttribute('id', 'ytAutoPldivPlus');
-    divP.setAttribute('style', 'margin:0px 10px;cursor:pointer;color:#F0F0F0;display:inline;vertical-align:top;');
+    divX.addEventListener("click", Close, false);
+    var divP = document.createElement("div");
+    divP.textContent = "⮫";
+    divP.setAttribute("id", "ytAutoPldivPlus");
+    divP.setAttribute(
+      "style",
+      "margin:0px 10px;cursor:pointer;color:#F0F0F0;display:inline;vertical-align:top;"
+    );
     group.appendChild(divP);
-    divP.addEventListener('click', Go, false);
-    loader.style.display = 'none';
-}
+    divP.addEventListener("click", Go, false);
+    loader.style.display = "none";
+  }
 
-function Go() {
+  function Go() {
     var url = `https://www.youtube.com/watch_videos?video_ids=${src}`;
-    var win = window.open(url, '_blank');
+    var win = window.open(url, "_blank");
     win.focus();
-}
+  }
 
-function Close() {
+  function Close() {
     stopVideo();
-    var c = document.getElementById('ytAutoPliframecontainer');
+    var c = document.getElementById("ytAutoPliframecontainer");
     c.hidden = true;
-}
+  }
 
-function onPlayerStateChange(event) {
+  function onPlayerStateChange(event) {
     if (newVideo()) done = false;
     if (event.data == YT.PlayerState.PLAYING && !done) {
-        var seconds = getStart();
-        if (seconds > 0) seekTo(seconds);
-        done = true;
+      var seconds = getStart();
+      if (seconds > 0) seekTo(seconds);
+      done = true;
     }
-}
+  }
 
-function getStart() {
+  function getStart() {
     var time = 0;
     var id = idFromVideo();
     var stamp = dictionary[id];
     if (stamp != null) {
-        var h, m, s;
-        h = m = s = '0';
-        var miregex = /t=((\d+)h)?((\d+)m)?(\d+)s/g;
-        hms = miregex.exec(stamp);
-        hms.forEach(function (element, k) {
-            if (element == null) hms[k] = null;
-        });
-        h = Number(hms[2]);
-        m = Number(hms[4]);
-        s = Number(hms[5]);
-        time = (h * 3600) + (m * 60) + s;
+      var h, m, s;
+      h = m = s = "0";
+      var miregex = /t=((\d+)h)?((\d+)m)?(\d+)s/g;
+      hms = miregex.exec(stamp);
+      hms.forEach(function (element, k) {
+        if (element == null) hms[k] = null;
+      });
+      h = Number(hms[2]);
+      m = Number(hms[4]);
+      s = Number(hms[5]);
+      time = h * 3600 + m * 60 + s;
     }
     if (stamp) {
-        console.log(`seeking to ${time}s (${stamp}):`, `https://www.youtube.com/watch?v=${id}&t=${time}s`);
-    };
+      console.log(
+        `seeking to ${time}s (${stamp}):`,
+        `https://www.youtube.com/watch?v=${id}&t=${time}s`
+      );
+    }
     return time;
-}
+  }
 
-function onError(event) {
+  function onError(event) {
     try {
-        var code = event.data.toString();
-        switch (code) {
-            case '2':
-                console.log('invalid parameter, playlist:', `https://www.youtube.com/watch_videos?video_ids=${src}`);
-                break;
-            case '5':
-                console.log('not playable in HTML5 player:', currentVideoUrl());
-                break;
-            case '100':
-                console.log('video not found:', currentVideoUrl());
-                break;
-            case '101':
-                console.log('video wont play in embbeded players, skipping:', currentVideoUrl());
-                badVideo();
-                break;
-            case '150':
-                console.log('video wont play in embbeded players (duplicate), skipping:', currentVideoUrl());
-                badVideo();
-                break;
-            case '152':
-                console.log('video wont play in embbeded players (152), skipping:', currentVideoUrl());
-                badVideo();
-                break;
-            default:
-                console.log('unexpected error, code:', code, currentVideoUrl());
-        }
+      var code = event.data.toString();
+      switch (code) {
+        case "2":
+          console.log(
+            "invalid parameter, playlist:",
+            `https://www.youtube.com/watch_videos?video_ids=${src}`
+          );
+          break;
+        case "5":
+          console.log("not playable in HTML5 player:", currentVideoUrl());
+          break;
+        case "100":
+          console.log("video not found:", currentVideoUrl());
+          break;
+        case "101":
+          console.log("video wont play in embbeded players, skipping:", currentVideoUrl());
+          badVideo();
+          break;
+        case "150":
+          console.log(
+            "video wont play in embbeded players (duplicate), skipping:",
+            currentVideoUrl()
+          );
+          badVideo();
+          break;
+        case "152":
+          console.log("video wont play in embbeded players (152), skipping:", currentVideoUrl());
+          badVideo();
+          break;
+        default:
+          console.log("unexpected error, code:", code, currentVideoUrl());
+      }
     } catch (e) {
-        console.log(e);
+      console.log(e);
     }
-}
+  }
 
-function loadPlaylist(src) {
-    var ytAutoPlplayer = YT.get('ytAutoPlplayer');
+  function loadPlaylist(src) {
+    var ytAutoPlplayer = YT.get("ytAutoPlplayer");
     if (ytAutoPlplayer != null) ytAutoPlplayer.loadPlaylist(src, 0);
-}
+  }
 
-function idFromVideo() {
+  function idFromVideo() {
     return player.getVideoData().video_id;
-}
+  }
 
-/* Player may not be ready yet, so never let a missing id break the log line. */
-function currentVideoId() {
+  /* Player may not be ready yet, so never let a missing id break the log line. */
+  function currentVideoId() {
     try {
-        return idFromVideo();
+      return idFromVideo();
     } catch (e) {
-        return '';
+      return "";
     }
-}
+  }
 
-function currentVideoUrl() {
+  function currentVideoUrl() {
     var id = currentVideoId();
-    return id ? `https://www.youtube.com/watch?v=${id}` : '(unknown video)';
-}
+    return id ? `https://www.youtube.com/watch?v=${id}` : "(unknown video)";
+  }
 
-function newVideo() {
+  function newVideo() {
     var now = idFromVideo();
     if (now != last) {
-        last = now;
-        return true;
+      last = now;
+      return true;
     } else return false;
-}
+  }
 
-function skipVideo() {
+  function skipVideo() {
     var i = -1;
-    try { i = player.getPlaylistIndex(); } catch (e) { }
+    try {
+      i = player.getPlaylistIndex();
+    } catch (e) {}
     var next = i > -1 ? i + 1 : skipped.length;
     if (ids[next] == null) {
-        console.log('no videos left to try');
-        return;
+      console.log("no videos left to try");
+      return;
     }
     console.log(`advancing to index ${next}:`, `https://www.youtube.com/watch?v=${ids[next]}`);
     player.playVideoAt(next);
     setTimeout(function () {
-        try {
-            var after = player.getPlaylistIndex();
-            if (after != next) {
-                console.log(`still at index ${after}, forcing loadVideoById`);
-                player.loadVideoById(ids[next]);
-            }
-        } catch (e) {
-            console.log('could not verify advance:', e);
+      try {
+        var after = player.getPlaylistIndex();
+        if (after != next) {
+          console.log(`still at index ${after}, forcing loadVideoById`);
+          player.loadVideoById(ids[next]);
         }
+      } catch (e) {
+        console.log("could not verify advance:", e);
+      }
     }, 2000);
-}
+  }
 
-function stopVideo() {
+  function stopVideo() {
     player.stopVideo();
-}
+  }
 
-function seekTo(seconds) {
+  function seekTo(seconds) {
     player.seekTo(seconds);
-}
+  }
 
-function lastVideo() {
+  function lastVideo() {
     var index = player.getPlaylistIndex();
     if (index == count - 1) return true;
     else return false;
-}
+  }
 
-function badVideo() {
+  function badVideo() {
     var id = currentVideoId();
     if (id && skipped.indexOf(id) < 0) {
-        skipped.push(id);
-        console.log(`skipped ${skipped.length} so far, watch them here:`, `https://www.youtube.com/watch_videos?video_ids=${skipped.join()}`);
+      skipped.push(id);
+      console.log(
+        `skipped ${skipped.length} so far, watch them here:`,
+        `https://www.youtube.com/watch_videos?video_ids=${skipped.join()}`
+      );
     }
     setTimeout(function () {
-        try { skipVideo(); } catch (e) { console.log('could not advance:', e); }
+      try {
+        skipVideo();
+      } catch (e) {
+        console.log("could not advance:", e);
+      }
     }, 5000);
-}
+  }
 })();
