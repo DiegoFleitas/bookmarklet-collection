@@ -116,6 +116,8 @@ javascript: (function () {
           try {
             ttPolicy = window.trustedTypes.createPolicy("ytAutoPl", {
               createScriptURL: function (s) {
+                /* only the hardcoded iframe_api URL may reach the document */
+                if (s !== apiUrl) throw new TypeError("unexpected script URL");
                 return s;
               },
             });
