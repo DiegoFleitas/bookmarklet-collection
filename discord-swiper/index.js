@@ -114,11 +114,21 @@ javascript: (function () {
       return !element.dispatchEvent(rightClick);
     }
 
+    /* set by a 429 on an earlier request, read before the next send */
+    let rateLimited = false;
+
     async function requestDiscordProfile(userId) {
+      /* the id arrives from page DOM through the observer: only a Discord snowflake may be
+         interpolated into an authenticated request path */
+      const discordUserId = ("" + userId).trim();
+      if (!/^\d{17,20}$/.test(discordUserId)) {
+        console.log("ignoring non-snowflake user id", userId);
+        return;
+      }
+      userId = discordUserId;
       var xhr = new XMLHttpRequest();
       xhr.withCredentials = true;
 
-      let wait = false;
       xhr.addEventListener("readystatechange", function () {
         if (this.readyState === 4) {
           if (xhr.status === 200) {
@@ -161,12 +171,13 @@ javascript: (function () {
             });
           } else if (xhr.status === 429) {
             console.log("gotta wait");
-            wait = true;
+            rateLimited = true;
           }
         }
       });
 
-      if (wait) {
+      if (rateLimited) {
+        rateLimited = false;
         await sleep(36000);
       }
 
